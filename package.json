@@ -1,0 +1,25 @@
+{
+  "name": "orangehrm-e2e-tests-playwright",
+  "version": "1.0.0",
+  "description": "E2E test for OrangeHRM using Playwright + Typescript",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Igor9411/orangehrm-e2e-tests-playwright.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Igor9411/orangehrm-e2e-tests-playwright/issues"
+  },
+  "homepage": "https://github.com/Igor9411/orangehrm-e2e-tests-playwright#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.30"
+  }
+}
