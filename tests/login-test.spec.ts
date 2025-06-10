@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../page-objects/orangeHRM/general.ts'
 
 test("Logging page", async ({page}) => {
 
-    await page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    await page.goto('')
     
     await expect(page).toHaveTitle('OrangeHRM')
 
@@ -16,3 +17,14 @@ test("Logging page", async ({page}) => {
 
     await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
 });
+
+test("Login2", async ({ page }) => {
+
+    const loginn = new LoginPage(page)
+    const dash = new LoginPage(page)
+    
+    await loginn.goto()
+    await loginn.login("Admin", "admin123")
+    await loginn.dashboardVisibility()
+
+})
