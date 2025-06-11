@@ -22,6 +22,7 @@ export class LoginPage {
     async goto(){
 
         await this.page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
+        
     }
 
     async login(username: string, password: string){
@@ -34,7 +35,57 @@ export class LoginPage {
     async dashboardVisibility(){
         
         await expect(this.dashboard).toBeVisible()
+
     }
 
 }
 
+export class NewEmployee {
+
+    readonly page: Page
+
+    private employeeNavigationLink : Locator
+    private newEmployeeButton: Locator
+    private firstNameInput: Locator
+    private lastNameInput: Locator
+    private employeeId: Locator
+    private detailsSwitch: Locator
+    private saveButton: Locator
+    private successToastMessage: Locator
+
+    constructor (page:Page){
+
+        this.employeeNavigationLink = page.getByRole('link', { name: 'PIM' })
+        this.newEmployeeButton = page.getByRole('link', { name: 'Add Employee' })
+        this.firstNameInput = page.getByRole('textbox', { name: 'First Name' })
+        this.lastNameInput = page.getByRole('textbox', { name: 'Last Name' })
+        this.employeeId = page.getByRole('textbox').nth(4)
+        this.saveButton = page.getByRole('button', { name: 'Save' })
+        this.successToastMessage = page.getByText('SuccessSuccessfully Saved×')
+
+        
+    }
+
+    async goto(){
+
+        await this.page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
+        
+    }
+
+    async newEmployee (name: string, lastname: string, id: number){
+
+        await this.employeeNavigationLink.click()
+        await this.newEmployeeButton.click()
+        await this.firstNameInput.fill(name)
+        await this.lastNameInput.fill(lastname)
+        await this.employeeId.fill(String(id))
+        await this.saveButton.click()
+        await expect(this.successToastMessage).toBeVisible()
+        await expect(this.firstNameInput).toContainText(name)
+        await expect(this.lastNameInput).toContainText(lastname)
+        await expect(this.employeeId).toContainText(String(id))
+
+    }
+
+    
+}
