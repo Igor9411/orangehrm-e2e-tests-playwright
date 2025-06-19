@@ -4,18 +4,18 @@ export class NewEmployee {
 
     readonly page: Page
 
-    private employeeNavigationLink : Locator
+    firstNameInput: Locator
+    lastNameInput: Locator
+    employeeId: Locator
+    saveButton: Locator
+    personalDetailsPanel: Locator
+
     private newEmployeeButton: Locator
-    private firstNameInput: Locator
-    private lastNameInput: Locator
-    private employeeId: Locator
-    private saveButton: Locator
     private successToastMessage: Locator
-    private personalDetailsPanel: Locator
+     
 
     constructor (page:Page){
 
-        this.employeeNavigationLink = page.getByRole('link', { name: 'PIM' })
         this.newEmployeeButton = page.getByRole('link', { name: 'Add Employee' })
         this.firstNameInput = page.getByRole('textbox', { name: 'First Name' })
         this.lastNameInput = page.getByRole('textbox', { name: 'Last Name' })
@@ -27,9 +27,9 @@ export class NewEmployee {
         
     }
 
+
     async newEmployee (name: string, lastname: string, id: number){
 
-        await this.employeeNavigationLink.click()
         await this.newEmployeeButton.click()
         await this.firstNameInput.fill(name)
         await this.lastNameInput.fill(lastname)
@@ -54,4 +54,52 @@ export class NewEmployee {
 
     }
     
+}
+
+export class PersonalDetails {
+
+    readonly newEmployee: NewEmployee
+
+    middleName: Locator
+    otherId: Locator
+    driverSLicense: Locator
+    licenseExpirtDate: Locator
+
+    constructor(page:Page){
+
+        this.middleName = page.getByRole('textbox', { name: 'Middle Name' })
+        this.otherId = page.locator('oxd-input oxd-input--active>>nth=6')
+        this.newEmployee = new NewEmployee(page)
+
+    }
+
+    async testy(midName: string, id: number ){
+
+        await expect(this.newEmployee.personalDetailsPanel).toBeVisible()
+        await this.middleName.fill(midName)
+        console.log(midName)
+        await this.otherId.fill(String(id))
+        console.log(id)
+        
+    }
+
+}
+
+export class EditingPersonalDetails {
+
+    readonly newEmployee:  NewEmployee // This links to different class
+
+    constructor(page: Page){
+
+        this.newEmployee = new NewEmployee(page) // This links to method from the different class
+    }
+
+    async testFunction (){
+
+        await this.newEmployee.firstNameInput.fill("test") // This links to locator from the method from different class
+        console.log('The test has passed :)')
+
+        
+    }
+
 }
