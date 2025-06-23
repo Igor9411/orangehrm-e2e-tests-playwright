@@ -64,23 +64,46 @@ export class PersonalDetails {
     otherId: Locator
     driverSLicense: Locator
     licenseExpirtDate: Locator
+    calendar: Locator
+    monthDropdown: Locator
+    calendarRightArrow: Locator
 
     constructor(page:Page){
 
         this.middleName = page.getByRole('textbox', { name: 'Middle Name' })
-        this.otherId = page.locator('oxd-input oxd-input--active>>nth=6')
-        this.newEmployee = new NewEmployee(page)
+        this.otherId = page.locator('div').filter({ hasText: /^Employee IdOther Id$/ }).getByRole('textbox').nth(1) // This selector is acceptable but could be better (like a label or getbyrole)
+        this.driverSLicense = page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByRole('textbox').first() // This selector is acceptable but could be better (like a label or getbyrole)
+        this.licenseExpirtDate = page.locator('div').filter({ hasText: /^License Expiry Date$/ }).first() // This selector is acceptable but could be better (like a label or getbyrole)
+        this.calendar = page.locator('.oxd-date-input-calendar')
+        this.monthDropdown = page.locator('.oxd-calendar-selector-month-selected')
+        this.calendarRightArrow = page.getByRole('button', { name: '' })
+
+
+        this.newEmployee = new NewEmployee(page) // this is locator from class NewEmployee
 
     }
 
-    async testy(midName: string, id: number ){
+    async addingPersonalData(midName: string, id: number, driver: string ){
 
         await expect(this.newEmployee.personalDetailsPanel).toBeVisible()
+
         await this.middleName.fill(midName)
         console.log(midName)
+
         await this.otherId.fill(String(id))
         console.log(id)
-        
+
+        await this.driverSLicense.fill(driver)
+        console.log(driver)
+
+        await this.licenseExpirtDate.click()
+
+        await expect(this.calendar).toBeVisible()
+
+        await this.monthDropdown.click()
+
+
+
     }
 
 }

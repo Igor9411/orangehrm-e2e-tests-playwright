@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { NewEmployee, PersonalDetails, EditingPersonalDetails } from '../page-objects/orangeHRM/actions.ts'
 import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { faker } from '@faker-js/faker'
@@ -47,7 +47,12 @@ test('Adding user personal data', async ({ page }) =>{
 
     const otherId = faker.number.int({min: 1000, max: 9999 })
 
-    await personalDetails.testy(middleName, otherId)
+    const driverL = faker.string.alphanumeric({length: {min: 8, max: 11}})
+
+    await personalDetails.addingPersonalData(middleName, otherId, driverL)
+
+    await page.getByText('September').click();
+
 
 })
 
@@ -85,6 +90,15 @@ test.only('looking for correct locator', async ({ page }) =>{
 
     await user0.click()
     
-    await page.locator('oxd-input.oxd-input--active>>nth=5').fill('test')
+    await page.getByText('10').click();
+
+
+    
+    await page.locator('oxd-calendar-selector-month-selected').click()
+
+
+    await page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByPlaceholder('yyyy-dd-mm').click();
+    await page.getByRole('listitem').filter({ hasText: 'June' }).locator('i').click();
+    await page.getByText('September').click();
 })
 
