@@ -2,6 +2,8 @@ import {Page, Locator, expect} from '@playwright/test'
 
 export class EmployeeDetails {
 
+    readonly page:Page
+
     // readonly newEmployee: NewEmployee
 
     // These locators are frome the previous class - NewEmployee
@@ -33,9 +35,13 @@ export class EmployeeDetails {
     bloodItem: Locator
     testField: Locator
     addButton: Locator
+
+    textBoxLocator:Locator
     
 
     constructor(page:Page){
+
+        this.page = page
 
         this.newEmployeeButton = page.getByRole('link', { name: 'Add Employee' })
         this.firstNameInput = page.getByRole('textbox', { name: 'First Name' })
@@ -65,7 +71,6 @@ export class EmployeeDetails {
         this.testField = page.locator('.oxd-input.oxd-input--active').last()
         this.addButton = page.getByRole('button', { name: ' Add' })
         
-
         // this.newEmployee = new NewEmployee(page) // this is locator from class NewEmployee
 
     }
@@ -141,8 +146,19 @@ export class EmployeeDetails {
 
         await this.addButton.click()
 
-
     }
+
+// This below is an example on how to use one locator for many inputs, it requires:
+// 1. Constructor with this.page = page
+// 2. Index as a parameter
+// 3. No async before method name and Locator at the end of first line (has to be check if it is a must or just a possibility)
+// 4. Maybe sth more, add when you know
+
+    gettingInputByIndex(index: number): Locator{
+
+        return this.page.getByRole('textbox').nth(index) 
+
+}
 
 }
 

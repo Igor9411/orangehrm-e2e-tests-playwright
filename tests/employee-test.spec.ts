@@ -94,20 +94,22 @@ test.only('looking for correct locator', async ({ page }) =>{
     const user0 = page.locator('div.oxd-table-body>div>>nth=0')
 
     await user0.click()
+
+    await personalDetails.gettingInputByIndex(5).fill('dupa')
     
     // await page.locator('.oxd-input.oxd-input--active').last().fill('test')
 
-    const file = page.locator('input[type=file]')
+    // const file = page.locator('input[type=file]')
 
-    page.getByRole('button', { name: ' Add' }).click()
+    // page.getByRole('button', { name: ' Add' }).click()
 
-    await file.setInputFiles('pictures/my_pic.jpg')
+    // await file.setInputFiles('pictures/my_pic.jpg')
 
-    await page.getByRole('textbox', { name: 'Type comment here' }).fill('Its a mee, Mario!')
+    // await page.getByRole('textbox', { name: 'Type comment here' }).fill('Its a mee, Mario!')
 
-    await page.getByRole('button', { name: 'Save' }).nth(2).click()
+    // await page.getByRole('button', { name: 'Save' }).nth(2).click()
 
-    await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible() // There is a locator for this in the EmployeeDetails class
+    // await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible() // There is a locator for this in the EmployeeDetails class
 
     // await page.getByPlaceholder('yyyy-dd-mm').nth(1).click()
    
