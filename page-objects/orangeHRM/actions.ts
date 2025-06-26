@@ -1,9 +1,10 @@
 import {Page, Locator, expect} from '@playwright/test'
 
-export class NewEmployee {
+export class EmployeeDetails {
 
-    readonly page: Page
+    // readonly newEmployee: NewEmployee
 
+    // These locators are frome the previous class - NewEmployee
     firstNameInput: Locator
     lastNameInput: Locator
     employeeId: Locator
@@ -12,9 +13,29 @@ export class NewEmployee {
 
     private newEmployeeButton: Locator
     private successToastMessage: Locator
-     
+    // These locators are frome the previous class - NewEmployee
 
-    constructor (page:Page){
+    middleName: Locator
+    otherId: Locator
+    driverSLicense: Locator
+    licenseExpirtDate: Locator // this is an input that opens up the license calendar but can be deleted
+    calendar: Locator // this is a calendar by itself
+    monthSeptember: Locator
+    dayTen: Locator
+    monthDropdown: Locator
+    nationalityDropdown: Locator
+    nationalityItem: Locator
+    martialStatusDropdown: Locator
+    martialStatusItem: Locator
+    birthCalendar: Locator // this is input that has to be clicked to open a calendar
+    maleGender: Locator
+    bloodDropdown: Locator
+    bloodItem: Locator
+    testField: Locator
+    addButton: Locator
+    
+
+    constructor(page:Page){
 
         this.newEmployeeButton = page.getByRole('link', { name: 'Add Employee' })
         this.firstNameInput = page.getByRole('textbox', { name: 'First Name' })
@@ -23,12 +44,33 @@ export class NewEmployee {
         this.saveButton = page.getByRole('button', { name: 'Save' })
         this.successToastMessage = page.getByText('SuccessSuccessfully Saved×')
         this.personalDetailsPanel = page.getByText('Personal DetailsEmployee Full')
+        // Locators above are from previos class - NewEmployee
 
+        this.middleName = page.getByRole('textbox', { name: 'Middle Name' })
+        this.otherId = page.locator('div').filter({ hasText: /^Employee IdOther Id$/ }).getByRole('textbox').nth(1) // This selector is acceptable but could be better (like a label or getbyrole)
+        this.driverSLicense = page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByRole('textbox').first() // This selector is acceptable but could be better (like a label or getbyrole)
+        this.licenseExpirtDate = page.getByPlaceholder('yyyy-dd-mm').nth(0) // This locator is found using getByPlaceholder function
+        this.calendar = page.locator('.oxd-date-input-calendar')
+        this.monthDropdown = page.locator('.oxd-calendar-selector-month-selected')
+        this.monthSeptember = page.getByText('September') // This is too specific and do not need to be in the class but for the sake of this test they are added here
+        this.dayTen = page.getByText('10') // This is too specific and do not need to be in the class but for the sake of this test they are added here
+        this.nationalityDropdown = page.locator('.oxd-select-text').first() // This locator is the first one with the name of.oxd-select-text
+        this.nationalityItem = page.locator('.oxd-select-option').nth(5) // This selector picks the 5th item from the dropdown
+        this.martialStatusDropdown = page.locator('.oxd-select-text').nth(1) // This locator is the second one with the name of.oxd-select-text
+        this.martialStatusItem = page.locator('.oxd-select-option').last() // This selector picks the last item from the dropdown
+        this.birthCalendar = page.getByPlaceholder('yyyy-dd-mm').nth(1) // This locator is found using getByPlaceholder function
+        this.maleGender = page.getByText('Male', {exact: true})
+        this.bloodDropdown = page.locator('.oxd-select-text').last()
+        this.bloodItem = page.locator('.oxd-select-text').nth(2)
+        this.testField = page.locator('.oxd-input.oxd-input--active').last()
+        this.addButton = page.getByRole('button', { name: ' Add' })
         
+
+        // this.newEmployee = new NewEmployee(page) // this is locator from class NewEmployee
+
     }
 
-
-    async newEmployee (name: string, lastname: string, id: number){
+    async creatingNewEmployee (name: string, lastname: string, id: number){
 
         await this.newEmployeeButton.click()
         await this.firstNameInput.fill(name)
@@ -50,42 +92,13 @@ export class NewEmployee {
         await expect(this.employeeId).toHaveValue(String(id))
         console.log(await this.employeeId.inputValue())
 
-        
-
-    }
-    
-}
-
-export class PersonalDetails {
-
-    readonly newEmployee: NewEmployee
-
-    middleName: Locator
-    otherId: Locator
-    driverSLicense: Locator
-    licenseExpirtDate: Locator
-    calendar: Locator
-    monthDropdown: Locator
-    calendarRightArrow: Locator
-
-    constructor(page:Page){
-
-        this.middleName = page.getByRole('textbox', { name: 'Middle Name' })
-        this.otherId = page.locator('div').filter({ hasText: /^Employee IdOther Id$/ }).getByRole('textbox').nth(1) // This selector is acceptable but could be better (like a label or getbyrole)
-        this.driverSLicense = page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByRole('textbox').first() // This selector is acceptable but could be better (like a label or getbyrole)
-        this.licenseExpirtDate = page.locator('div').filter({ hasText: /^License Expiry Date$/ }).first() // This selector is acceptable but could be better (like a label or getbyrole)
-        this.calendar = page.locator('.oxd-date-input-calendar')
-        this.monthDropdown = page.locator('.oxd-calendar-selector-month-selected')
-        this.calendarRightArrow = page.getByRole('button', { name: '' })
-
-
-        this.newEmployee = new NewEmployee(page) // this is locator from class NewEmployee
+    // These two methods above are from previos class - NewEmployee
 
     }
 
     async addingPersonalData(midName: string, id: number, driver: string ){
 
-        await expect(this.newEmployee.personalDetailsPanel).toBeVisible()
+        await expect(this.personalDetailsPanel).toBeVisible()
 
         await this.middleName.fill(midName)
         console.log(midName)
@@ -102,6 +115,31 @@ export class PersonalDetails {
 
         await this.monthDropdown.click()
 
+        await this.monthSeptember.click()
+
+        await this.dayTen.click()
+
+        await expect(this.licenseExpirtDate).toHaveValue('2025-10-09')
+
+        await this.nationalityDropdown.click()
+
+        await this.nationalityItem.click()
+
+        await this.martialStatusDropdown.click()
+
+        await this.martialStatusItem.click()
+
+        await this.maleGender.click()
+
+        await this.bloodDropdown.click()
+
+        await this.bloodItem.click()
+
+        await expect(this.bloodDropdown).toHaveValue('A-')
+
+        await this.testField.fill('This is not a test.')
+
+        await this.addButton.click()
 
 
     }
@@ -110,11 +148,12 @@ export class PersonalDetails {
 
 export class EditingPersonalDetails {
 
-    readonly newEmployee:  NewEmployee // This links to different class
+    readonly newEmployee:  EmployeeDetails // This links to different class
 
     constructor(page: Page){
 
-        this.newEmployee = new NewEmployee(page) // This links to method from the different class
+        this.newEmployee = new EmployeeDetails(page) // This links to method from the different class
+        
     }
 
     async testFunction (){

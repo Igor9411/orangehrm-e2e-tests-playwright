@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { NewEmployee, PersonalDetails, EditingPersonalDetails } from '../page-objects/orangeHRM/actions.ts'
+import { EmployeeDetails, EditingPersonalDetails } from '../page-objects/orangeHRM/actions.ts'
 import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { faker } from '@faker-js/faker'
 
@@ -19,7 +19,7 @@ test('New employee creation', async ({ page }) => {
 
     test.setTimeout(90000)
 
-    const employeeCreation = new NewEmployee(page)
+    const employeeCreation = new EmployeeDetails(page)
 
     const firstName = faker.person.firstName()
 
@@ -27,7 +27,7 @@ test('New employee creation', async ({ page }) => {
     
     const userId = faker.number.int( {max: 1000} )
 
-    await employeeCreation.newEmployee(firstName, lastName, userId)
+    await employeeCreation.creatingNewEmployee(firstName, lastName, userId)
 
     await employeeCreation.employeeVerification(firstName, lastName, userId)
     
@@ -41,7 +41,7 @@ test('Adding user personal data', async ({ page }) =>{
 
     console.log("User 0 has been clicked.")
 
-    const personalDetails = new PersonalDetails(page)
+    const personalDetails = new EmployeeDetails(page)
 
     const middleName = faker.person.firstName()
 
@@ -51,14 +51,17 @@ test('Adding user personal data', async ({ page }) =>{
 
     await personalDetails.addingPersonalData(middleName, otherId, driverL)
 
-    await page.getByText('September').click();
+    // await page.getByText('September').click();
 
+    // await page.getByText('10').click()
+
+   await expect(personalDetails.licenseExpirtDate).toHaveValue('2025-10-09')
 
 })
-
+// For now this is only a test function that checks how to link a method and locator from one class to another
 test('Editing user personal dat', async ({ page }) =>{
 
-    const employeeCreation = new NewEmployee(page)
+    const employeeCreation = new EmployeeDetails(page)
 
     const personalDetails = new EditingPersonalDetails(page)
 
@@ -67,7 +70,7 @@ test('Editing user personal dat', async ({ page }) =>{
     // await personalDetails.testFunction()
 
 })
-
+// This is only partly done, has to be finished later
 test('Deleting a user', async ({ page }) =>{
 
     const user0 = page.locator('div.oxd-table-body>div>>nth=0')
@@ -85,20 +88,28 @@ test('Deleting a user', async ({ page }) =>{
 })
 
 test.only('looking for correct locator', async ({ page }) =>{
+
+    const personalDetails = new EmployeeDetails(page)
     
     const user0 = page.locator('div.oxd-table-body>div>>nth=0')
 
     await user0.click()
     
-    await page.getByText('10').click();
+    // await page.locator('.oxd-input.oxd-input--active').last().fill('test')
 
+    const file = page.locator('input[type=file]')
 
-    
-    await page.locator('oxd-calendar-selector-month-selected').click()
+    page.getByRole('button', { name: ' Add' }).click()
 
+    await file.setInputFiles('pictures/my_pic.jpg')
 
-    await page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByPlaceholder('yyyy-dd-mm').click();
-    await page.getByRole('listitem').filter({ hasText: 'June' }).locator('i').click();
-    await page.getByText('September').click();
+    await page.getByRole('textbox', { name: 'Type comment here' }).fill('Its a mee, Mario!')
+
+    await page.getByRole('button', { name: 'Save' }).nth(2).click()
+
+    await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible() // There is a locator for this in the EmployeeDetails class
+
+    // await page.getByPlaceholder('yyyy-dd-mm').nth(1).click()
+   
 })
 
