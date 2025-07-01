@@ -15,7 +15,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login',
-    launchOptions: {slowMo: 1000},
+    launchOptions: {slowMo: 500},
     trace: 'on-first-retry',
   },
 

@@ -4,9 +4,7 @@ export class EmployeeDetails {
 
     readonly page:Page
 
-    // readonly newEmployee: NewEmployee
-
-    // These locators are frome the previous class - NewEmployee
+    // These locators are from the previous class - NewEmployee
     firstNameInput: Locator
     lastNameInput: Locator
     employeeId: Locator
@@ -14,10 +12,9 @@ export class EmployeeDetails {
     personalDetailsPanel: Locator
 
     private newEmployeeButton: Locator
-    private successToastMessage: Locator
-    // These locators are frome the previous class - NewEmployee
+    successToastMessage: Locator
 
-    middleName: Locator
+    // These locators are from the current class - EmployeeDetails
     otherId: Locator
     driverSLicense: Locator
     licenseExpirtDate: Locator // this is an input that opens up the license calendar but can be deleted
@@ -33,11 +30,16 @@ export class EmployeeDetails {
     maleGender: Locator
     bloodDropdown: Locator
     bloodItem: Locator
-    testField: Locator
     addButton: Locator
-
-    textBoxLocator:Locator
-    
+    yearDropdown: Locator
+    yearDrpodownItem: Locator
+    validationFirst: Locator
+    validationSecond: Locator 
+    saveAdditionalButton: Locator
+    validSele: Locator[]
+    firstUser: Locator
+    employeeFullNameForm: Locator
+    successUpdatedToast: Locator
 
     constructor(page:Page){
 
@@ -46,32 +48,58 @@ export class EmployeeDetails {
         this.newEmployeeButton = page.getByRole('link', { name: 'Add Employee' })
         this.firstNameInput = page.getByRole('textbox', { name: 'First Name' })
         this.lastNameInput = page.getByRole('textbox', { name: 'Last Name' })
-        this.employeeId = page.getByRole('textbox').nth(4)
+        this.employeeId = page.getByRole('textbox').nth(4)               // This can be changed using the gettingInputByIndex method, but don't have to
         this.saveButton = page.getByRole('button', { name: 'Save' })
         this.successToastMessage = page.getByText('SuccessSuccessfully Saved×')
         this.personalDetailsPanel = page.getByText('Personal DetailsEmployee Full')
-        // Locators above are from previos class - NewEmployee
+        // Locators above are from previous class - NewEmployee
 
-        this.middleName = page.getByRole('textbox', { name: 'Middle Name' })
-        this.otherId = page.locator('div').filter({ hasText: /^Employee IdOther Id$/ }).getByRole('textbox').nth(1) // This selector is acceptable but could be better (like a label or getbyrole)
-        this.driverSLicense = page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByRole('textbox').first() // This selector is acceptable but could be better (like a label or getbyrole)
+        // Calendar selectors //
+
         this.licenseExpirtDate = page.getByPlaceholder('yyyy-dd-mm').nth(0) // This locator is found using getByPlaceholder function
         this.calendar = page.locator('.oxd-date-input-calendar')
         this.monthDropdown = page.locator('.oxd-calendar-selector-month-selected')
         this.monthSeptember = page.getByText('September') // This is too specific and do not need to be in the class but for the sake of this test they are added here
-        this.dayTen = page.getByText('10') // This is too specific and do not need to be in the class but for the sake of this test they are added here
-        this.nationalityDropdown = page.locator('.oxd-select-text').first() // This locator is the first one with the name of.oxd-select-text
-        this.nationalityItem = page.locator('.oxd-select-option').nth(5) // This selector picks the 5th item from the dropdown
-        this.martialStatusDropdown = page.locator('.oxd-select-text').nth(1) // This locator is the second one with the name of.oxd-select-text
-        this.martialStatusItem = page.locator('.oxd-select-option').last() // This selector picks the last item from the dropdown
+        this.yearDropdown = page.locator('.oxd-calendar-selector-year').first()
+        this.yearDrpodownItem = page.getByRole('menu').getByText('2025')
+        this.dayTen = page.getByText('10', {exact: true}) // This is too specific and do not need to be in the class but for the sake of this test they are added here
         this.birthCalendar = page.getByPlaceholder('yyyy-dd-mm').nth(1) // This locator is found using getByPlaceholder function
+
+        // Nationality selectors //
+
+        this.nationalityDropdown = page.locator('.oxd-select-text').first() // This locator is the first one with the name of.oxd-select-text
+        this.nationalityItem = page.locator('.oxd-select-option').nth(5) // This selector picks the 5th item from the dropdown (Andorran)
+
+        // Martial Status selectors // 
+
+        this.martialStatusDropdown = page.locator('.oxd-select-text').nth(1) // This locator is the second one with the name of.oxd-select-text
+        this.martialStatusItem = page.locator('.oxd-select-option').last() // This selector picks the last item from the dropdown (Other)
+
+        // Other selectors //
+
         this.maleGender = page.getByText('Male', {exact: true})
         this.bloodDropdown = page.locator('.oxd-select-text').last()
-        this.bloodItem = page.locator('.oxd-select-text').nth(2)
-        this.testField = page.locator('.oxd-input.oxd-input--active').last()
+        this.bloodItem = page.getByRole('option', { name: 'A-' })
         this.addButton = page.getByRole('button', { name: ' Add' })
+        this.saveAdditionalButton = page.locator('form').filter({ hasText: 'Employee Full' }).getByRole('button')
+        this.firstUser = page.locator('div.oxd-table-body>div>>nth=0')
+        this.successUpdatedToast = page.getByText('SuccessSuccessfully Updated×')
+
+        // Validation selectors //
+        // These are grouped in array (preferable more than 2 but it is just an example) and later looped
+        // The first selector is a part of the page where the test is asserting the Validation messages
+
+        this.employeeFullNameForm = page.locator('.--name-grouped-field')
+
+        this.validSele = [
+            this.employeeFullNameForm.getByText('Required').first(),
+            this.employeeFullNameForm.getByText('Required').last(),
+        ]
         
-        // this.newEmployee = new NewEmployee(page) // this is locator from class NewEmployee
+        // The ones below are an examples of poorly written selctors but sometimes they have to be used (in critical situations when no other selectors match)
+
+        this.otherId = page.locator('div').filter({ hasText: /^Employee IdOther Id$/ }).getByRole('textbox').nth(1) // This selector is acceptable but could be better (like a label or getbyrole)
+        this.driverSLicense = page.locator('div').filter({ hasText: /^Driver's License NumberLicense Expiry Date$/ }).getByRole('textbox').first() // This selector is acceptable but could be better (like a label or getbyrole)
 
     }
 
@@ -97,54 +125,7 @@ export class EmployeeDetails {
         await expect(this.employeeId).toHaveValue(String(id))
         console.log(await this.employeeId.inputValue())
 
-    // These two methods above are from previos class - NewEmployee
-
-    }
-
-    async addingPersonalData(midName: string, id: number, driver: string ){
-
-        await expect(this.personalDetailsPanel).toBeVisible()
-
-        await this.middleName.fill(midName)
-        console.log(midName)
-
-        await this.otherId.fill(String(id))
-        console.log(id)
-
-        await this.driverSLicense.fill(driver)
-        console.log(driver)
-
-        await this.licenseExpirtDate.click()
-
-        await expect(this.calendar).toBeVisible()
-
-        await this.monthDropdown.click()
-
-        await this.monthSeptember.click()
-
-        await this.dayTen.click()
-
-        await expect(this.licenseExpirtDate).toHaveValue('2025-10-09')
-
-        await this.nationalityDropdown.click()
-
-        await this.nationalityItem.click()
-
-        await this.martialStatusDropdown.click()
-
-        await this.martialStatusItem.click()
-
-        await this.maleGender.click()
-
-        await this.bloodDropdown.click()
-
-        await this.bloodItem.click()
-
-        await expect(this.bloodDropdown).toHaveValue('A-')
-
-        await this.testField.fill('This is not a test.')
-
-        await this.addButton.click()
+    // These two methods above are from previous class - NewEmployee
 
     }
 
@@ -159,6 +140,82 @@ export class EmployeeDetails {
         return this.page.getByRole('textbox').nth(index) 
 
 }
+
+    async gettingFirstUser(){
+
+        await this.firstUser.click()
+
+    }
+
+    async calendarAddingDate() {
+            
+        await this.licenseExpirtDate.click()
+
+        await expect(this.calendar).toBeVisible()
+
+        await this.monthDropdown.click()
+
+        await this.monthSeptember.click()
+
+        await this.yearDropdown.click()
+
+        await this.yearDrpodownItem.click()
+
+        await this.dayTen.click()
+
+        await expect(this.licenseExpirtDate).toHaveValue('2025-10-09')
+
+    }
+
+    async addingAndorranNationality(){
+
+        await this.nationalityDropdown.click()
+
+        await this.nationalityItem.click()
+
+    }
+
+    async settingOtherMatrialStatus(){
+
+        await this.martialStatusDropdown.click()
+
+        await this.martialStatusItem.click()
+
+    }
+
+    async settingMaleGender(){
+
+        await this.maleGender.click()
+
+    }
+
+    async settingBloodType(){
+
+        await this.bloodDropdown.click()
+
+        await this.bloodItem.click()
+
+        await expect(this.bloodDropdown).toHaveText('A-')
+
+    }
+
+    async validMessage(){
+
+        for (const v of this.validSele){
+            await expect(v).toBeVisible()
+        }
+    }
+
+    async noValidMessage(){ // This checks if the Required validation messages are not visible.
+
+        for (const x of this.validSele){
+            await expect(x).not.toBeVisible() 
+    }
+
+
+}
+    
+
 
 }
 
