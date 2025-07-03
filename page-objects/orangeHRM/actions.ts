@@ -215,7 +215,7 @@ export class EmployeeDetails {
 
 }
     
-
+// The class below is an example of a linking methods or locators from different class to another.
 
 }
 
