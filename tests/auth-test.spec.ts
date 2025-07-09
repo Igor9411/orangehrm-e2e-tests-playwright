@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { LogOutPage } from '../page-objects/orangeHRM/logout.ts'
+import { USERNAME, PASSWORD } from '../env.ts'
 
 
 test.beforeEach('Log in to Orange', async ({ page }) => {
@@ -9,7 +10,7 @@ test.beforeEach('Log in to Orange', async ({ page }) => {
 
     const loggingIn = new LoginPage(page)
 
-    await loggingIn.login('Admin', 'admin123')
+    await loggingIn.login(USERNAME, PASSWORD)
 
 })
 

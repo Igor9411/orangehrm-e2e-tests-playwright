@@ -2,6 +2,8 @@ import { test, expect, } from '@playwright/test';
 import { EmployeeDetails, EditingPersonalDetails } from '../page-objects/orangeHRM/actions.ts'
 import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { faker } from '@faker-js/faker'
+import { USERNAME, PASSWORD } from '../env.ts'
+import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
 
 const firstName = faker.person.firstName()
 
@@ -15,9 +17,11 @@ test.beforeEach('Log in to Orange', async ({ page }) => {
 
     const loggingIn = new LoginPage(page)
 
-    await loggingIn.login('Admin', 'admin123')
+    await loggingIn.login(USERNAME, PASSWORD)
 
-    await page.getByRole('link', { name: 'PIM' }).click() // this is only for the employ creation, cannot be used for test covering different sites/topics
+    const pimRedirection = new NavigationPanel(page)
+
+    await pimRedirection.getAnyNavPanelItem('PIM').click()
 
 })
 
@@ -112,7 +116,7 @@ test('Successfull edit of the user data', async({page}) =>{
 })
 
 
-test.only('Unsuccessfull edit of the user data', async({page}) =>{
+test('Unsuccessfull edit of the user data', async({page}) =>{
 
     const personalDetails = new EmployeeDetails(page)
 
@@ -132,7 +136,7 @@ test.only('Unsuccessfull edit of the user data', async({page}) =>{
 
 })
 
-test('Deleting a user', async ({ page }) =>{
+test.skip('Deleting a user', async ({ page }) =>{
 
     // This is only partly done, has to be finished later
 
@@ -150,7 +154,7 @@ test('Deleting a user', async ({ page }) =>{
     console.log("Last user has been clicked.")
 })
 
-test('Linking methods, classes and locators', async ({ page }) =>{
+test.skip('Linking methods, classes and locators', async ({ page }) =>{
 
     // For now this is only a test function that checks how to link a method 
     // and locator from one class to another
@@ -161,7 +165,7 @@ test('Linking methods, classes and locators', async ({ page }) =>{
 
 })
 
-test('looking for correct locator', async ({ page }) =>{
+test.skip('looking for correct locator', async ({ page }) =>{
 
     const personalDetails = new EmployeeDetails(page)
     

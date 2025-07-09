@@ -23,6 +23,7 @@
     "@types/node": "^22.15.30"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.8.0"
+    "@faker-js/faker": "^9.8.0",
+    "dotenv": "^17.0.1"
   }
 }
