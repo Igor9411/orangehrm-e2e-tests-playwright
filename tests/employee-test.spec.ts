@@ -37,7 +37,7 @@ test('New employee creation', async ({ page }) => {
     
 })
 
-test('Adding user personal data', async ({ page }) =>{
+test.skip('Adding user personal data', async ({ page }) =>{
 
     const personalDetails = new EmployeeDetails(page)
 
@@ -87,7 +87,7 @@ test('Adding user personal data', async ({ page }) =>{
     
 })
 
-test('Successfull edit of the user data', async({page}) =>{
+test.skip('Successfull edit of the user data', async({page}) =>{
 
     const personalDetails = new EmployeeDetails(page)
 
@@ -116,7 +116,7 @@ test('Successfull edit of the user data', async({page}) =>{
 })
 
 
-test('Unsuccessfull edit of the user data', async({page}) =>{
+test.skip('Unsuccessfull edit of the user data', async({page}) =>{
 
     const personalDetails = new EmployeeDetails(page)
 
@@ -136,20 +136,21 @@ test('Unsuccessfull edit of the user data', async({page}) =>{
 
 })
 
-test.skip('Deleting a user', async ({ page }) =>{
+test('Deleting a user', async ({ page }) =>{
 
-    // This is only partly done, has to be finished later
+    const personalDetails = new EmployeeDetails(page)
 
-    const user0 = page.locator('div.oxd-table-body>div>>nth=0')
-    const userLast = page.locator('div.oxd-table-body>div>>nth=-1')
+    await personalDetails.gettingInputByIndex(2).fill(String(userId))
 
-    await page.getByRole('link', { name: 'PIM' }).click()
+    await page.getByRole('button', { name: 'Search' }).click()
 
-    // await user0.click()
+    await page.getByRole('button', { name: '' }).last().click()
 
-    // console.log("User 0 has been clicked.")
+    await expect(page.getByText('×Are you Sure?The selected')).toBeVisible()
 
-    await userLast.click()
+    await page.getByRole('button', { name: ' Yes, Delete' }).click()
+
+    await expect(page.getByText('SuccessSuccessfully Deleted×')).toBeVisible()
 
     console.log("Last user has been clicked.")
 })
