@@ -140,3 +140,9 @@ dist
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# OrangeHRM Local version
+/orangehrm-docker/html
+
+# User data
+/tmp/

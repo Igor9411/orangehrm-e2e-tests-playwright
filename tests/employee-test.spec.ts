@@ -4,12 +4,13 @@ import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { faker } from '@faker-js/faker'
 import { USERNAME, PASSWORD } from '../env.ts'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
+import fs from 'fs'
 
-const firstName = faker.person.firstName()
+// const firstName = faker.person.firstName()
 
-const lastName = faker.person.lastName()
+// const lastName = faker.person.lastName()
     
-const userId = faker.number.int( {max: 1000} )
+// const userId = faker.number.int( {max: 1000} )
 
 test.beforeEach('Log in to Orange', async ({ page }) => {
 
@@ -27,17 +28,26 @@ test.beforeEach('Log in to Orange', async ({ page }) => {
 
 test('New employee creation', async ({ page }) => {
 
+    const user = {
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        userId: faker.number.int( {max: 1000} )
+    }
+
     test.setTimeout(90000)
 
     const employeeCreation = new EmployeeDetails(page)
 
-    await employeeCreation.creatingNewEmployee(firstName, lastName, userId)
+    await employeeCreation.creatingNewEmployee(user.firstName, user.lastName, user.userId)
 
-    await employeeCreation.employeeVerification(firstName, lastName, userId)
+    await employeeCreation.employeeVerification(user.firstName, user.lastName, user.userId)
+
+    fs.mkdirSync('tmp', {recursive: true}) // fs.mkdirSync (synchronus mkdir) creates folder of name 'tmp', recursive: true checkes if folder exists and addes all other nessesities
+    fs.writeFileSync('tmp/user.json', JSON.stringify(user, null, 2)) // fs.wrifeFileSync (synchronus write) saves data in the file, user changes JSON into readable text, null means no replacer so nothing is ommitted, 2 means format of the file
     
 })
 
-test.skip('Adding user personal data', async ({ page }) =>{
+test('Adding user personal data', async ({ page }) =>{
 
     const personalDetails = new EmployeeDetails(page)
 
@@ -138,9 +148,11 @@ test.skip('Unsuccessfull edit of the user data', async({page}) =>{
 
 test('Deleting a user', async ({ page }) =>{
 
+    const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8')); // This 'takes' user data from the tmp file and allows to use that data later in the test (line 155)
+
     const personalDetails = new EmployeeDetails(page)
 
-    await personalDetails.gettingInputByIndex(2).fill(String(userId))
+    await personalDetails.gettingInputByIndex(2).fill(String(user.userId))
 
     await page.getByRole('button', { name: 'Search' }).click()
 

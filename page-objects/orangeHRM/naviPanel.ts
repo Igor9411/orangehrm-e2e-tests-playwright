@@ -42,13 +42,13 @@ export class NavigationPanel{
 
         for (let i = 0; i < this.navigationPanelItems.length; i++){
 
-            const testy1 = this.navigationItem.nth(i)
+            const everyNavigationItem = this.navigationItem.nth(i)
 
-            await expect(testy1).toBeVisible()
+            await expect(everyNavigationItem).toBeVisible()
 
-            console.log(testy1)
+            console.log(everyNavigationItem)
 
-            await expect(testy1).toHaveText(this.navigationPanelItems[i])
+            await expect(everyNavigationItem).toHaveText(this.navigationPanelItems[i])
 
             console.log(this.navigationPanelItems[i])
 
