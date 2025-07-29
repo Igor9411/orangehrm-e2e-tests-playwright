@@ -1,4 +1,4 @@
-import { test, expect, } from '@playwright/test';
+import { test } from '@playwright/test';
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts'
 import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { USERNAME, PASSWORD } from '../env.ts'
