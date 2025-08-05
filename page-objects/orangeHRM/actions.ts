@@ -135,7 +135,7 @@ export class EmployeeDetails {
 // 3. No async before method name and Locator at the end of first line (has to be check if it is a must or just a possibility)
 // 4. Maybe sth more, add when you know
 
-    gettingInputByIndex(index: number): Locator{
+    gettingInputByIndex(index: number): Locator{ // This is in uihelpers and has to be recaftor (deleted) in the future.
 
         return this.page.getByRole('textbox').nth(index) 
 

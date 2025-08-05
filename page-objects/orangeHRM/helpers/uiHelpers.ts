@@ -1,0 +1,52 @@
+import { Page, Locator, expect } from '@playwright/test'
+
+export class UiHelpers {
+
+    readonly page:Page
+
+    topBarItem: Locator 
+
+    topBarMenuItem: Locator
+
+    dropdownOptionItem: Locator
+
+    inputSelector: Locator // This has to be taken from gettinganyinputbyindex 
+
+    constructor(page: Page){
+
+        this.page = page
+
+        this.topBarItem = page.getByRole('listitem')
+
+        this.topBarMenuItem = page.getByRole('menuitem')
+
+        this.dropdownOptionItem = page.getByRole('option')
+
+        this.inputSelector = page.getByRole('textbox')
+
+    }
+
+    gettingInputByIndex(index: number): Locator{
+
+        return this.inputSelector.nth(index) 
+
+    }
+
+    gettingAnyTopBarItem(name:string): Locator{
+
+        return this.topBarItem.filter({hasText: name})
+
+    }
+
+    gettingAnyTopBarMenuItem( name:string ): Locator{ 
+
+        return this.topBarMenuItem.filter({ hasText: name })
+
+    }
+
+    gettingAnyDropdownItem( name:string ): Locator{ 
+
+        return this.dropdownOptionItem.filter({ hasText: name })
+
+    }
+}

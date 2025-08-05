@@ -4,6 +4,7 @@ import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { faker } from '@faker-js/faker'
 import { USERNAME, PASSWORD } from '../env.ts'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
+import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
 import fs from 'fs'
 
 const user = {
@@ -35,6 +36,8 @@ test('New employee creation', async ({ page }) => {
     await employeeCreation.creatingNewEmployee(user.firstName, user.lastName, user.Id)
 
     await employeeCreation.employeeVerification(user.firstName, user.lastName, user.Id)
+
+    await expect(page.getByRole('heading').filter({ hasText: `${user.firstName} ${user.lastName}`})).toBeVisible()
 
     fs.mkdirSync('tmp', {recursive: true}) // fs.mkdirSync (synchronus mkdir) creates folder of name 'tmp', recursive: true checkes if folder exists and addes all other nessesities
     fs.writeFileSync('tmp/user.json', JSON.stringify(user, null, 2)) // fs.wrifeFileSync (synchronus write) saves data in the file, user changes JSON into readable text, null means no replacer so nothing is ommitted, 2 means format of the file
