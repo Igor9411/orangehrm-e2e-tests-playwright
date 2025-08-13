@@ -14,27 +14,28 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login',
+    baseURL: 'http://localhost:8080/',
     launchOptions: {slowMo: 500},
     trace: 'on-first-retry',
   },
 
   /* Configure projects for major browsers */
   projects: [
+
+    {
+      name: "setup",
+      use: { ...devices['Desktop Chrome']},
+      testMatch: /.*\.setup\.ts/,
+    },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+      use: { ...devices['Desktop Chrome'],
+        storageState: ".auth/login.json", },
+      dependencies: ["setup"]
+    }
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
 
     /* Test against mobile viewports. */
     // {

@@ -1,17 +1,15 @@
 import { test, expect } from '@playwright/test'
-import { USERNAME, PASSWORD } from '../env.ts'
-import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
 import { Leave } from '../page-objects/orangeHRM/leave.ts';
 import { EmployeeDetails } from '../page-objects/orangeHRM/actions.ts'
 import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
+import { faker } from '@faker-js/faker'
 import fs from 'fs'
 
 const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8'))
+const leaveName = `${faker.word.adjective().toUpperCase()} LEAVE`
 
-test.describe('Adding Employee Leave', () =>{
-
-    let loginPage: LoginPage
+test.describe('Adding Individual Employee Leave', () =>{
 
     let navRedirection: NavigationPanel
 
@@ -23,8 +21,6 @@ test.describe('Adding Employee Leave', () =>{
 
 test.beforeEach(async ({ page })=>{
 
-    loginPage = new LoginPage (page)
-
     navRedirection = new NavigationPanel (page)
 
     assignLeave = new Leave (page)
@@ -34,26 +30,38 @@ test.beforeEach(async ({ page })=>{
     datePicker = new EmployeeDetails (page)
 
     await page.goto('')
-    
-    await loginPage.login(USERNAME, PASSWORD)
+
+})
+
+test('Add new type of leave', async ({}) =>{
 
     await navRedirection.getAnyNavPanelItem('Leave').click()
+
+    await gettingUiElements.gettingAnyTopBarItem('Configure').click() // This and line below can make a method from (probably).
+
+    await gettingUiElements.gettingAnyTopBarMenuItem('Leave Types').click() 
+
+    await assignLeave.leaveTypeAddButton.click()
+
+    await assignLeave.creatingLeaveType(leaveName)
+
+    await expect(datePicker.successToastMessage).toBeVisible()
 
 })
 
 test('Adding entitlements to employee', async ({ page }) => {
 
+    await navRedirection.getAnyNavPanelItem('Leave').click()
+
     await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible()
 
-    await gettingUiElements.gettingAnyTopBarItem('Entitlements').click()
+    await gettingUiElements.gettingAnyTopBarItem('Entitlements').click() // This and line below can make a method from (probably).
 
     await gettingUiElements.gettingAnyTopBarMenuItem('Add Entitlements').click()
 
-    await gettingUiElements.gettingInputByIndex(1).fill(`${user.firstName} ${user.lastName}`)
+    await assignLeave.individualEmployeeRadioButton.click()
 
-    await expect(page.getByRole('option', { name: `${user.firstName} ${user.lastName}`})).toBeVisible()
-
-    await page.getByRole('option', { name: `${user.firstName} ${user.lastName}`}).click()
+    await assignLeave.gettingSpecificUser(1,`${user.firstName} ${user.lastName}`)
 
     await page.getByText('-- Select --').click()
 
@@ -63,7 +71,7 @@ test('Adding entitlements to employee', async ({ page }) => {
 
     await gettingUiElements.gettingInputByIndex(2).fill('26')
 
-    await page.getByRole('button', { name: 'Save' }).click()
+    await assignLeave.saveButton.click()
 
     await expect(page.getByText('×Updating EntitlementExisting')).toBeVisible()
 
@@ -114,4 +122,6 @@ test('Confirming that employee has scheduled 6 vacation days', async ({ page }) 
     await expect(page.getByRole('row', { name: ' 2025-10-09 to 2025-17-09' })).toBeVisible()
 
 })
+
+
 })

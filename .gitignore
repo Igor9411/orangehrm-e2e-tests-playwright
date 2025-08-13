@@ -146,3 +146,6 @@ dist
 
 # User data
 /tmp/
+
+# Login temp memory/cache
+/.auth/

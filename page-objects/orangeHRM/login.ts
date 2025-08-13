@@ -7,7 +7,7 @@ export class LoginPage {
     private usernameInput: Locator
     private passwordInput: Locator
     private loginButton: Locator
-    private dashboard: Locator
+    private orangeHrmBanner: Locator
 
     constructor(page:Page){
 
@@ -16,22 +16,21 @@ export class LoginPage {
         this.usernameInput = page.getByRole('textbox', { name: 'Username' })
         this.passwordInput = page.getByRole('textbox', { name: 'Password' })
         this.loginButton = page.getByRole('button', { name: 'Login' })
-        this.dashboard = page.getByRole('heading', { name: 'Dashboard' })
+        this.orangeHrmBanner = page.getByRole('link', { name: 'client brand banner' })
     }
     
 
     async login(username: string, password: string){
 
         await this.usernameInput.fill(username)
+
         await this.passwordInput.fill(password)
+
         await this.loginButton.click()
 
-}
-    async dashboardVisibility(){
-        
-        await expect(this.dashboard).toBeVisible() // This was only used to confirm that logging in to the page works, can be deleted later
+        await expect(this.orangeHrmBanner).toBeVisible()
 
-    }
+}
 
 }
 

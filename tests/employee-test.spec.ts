@@ -1,8 +1,6 @@
 import { test, expect, } from '@playwright/test';
-import { EmployeeDetails, EditingPersonalDetails } from '../page-objects/orangeHRM/actions.ts'
-import { LoginPage } from '../page-objects/orangeHRM/login.ts'
+import { EmployeeDetails } from '../page-objects/orangeHRM/actions.ts'
 import { faker } from '@faker-js/faker'
-import { USERNAME, PASSWORD } from '../env.ts'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
 import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
 import fs from 'fs'
@@ -13,25 +11,24 @@ const user = {
         Id: faker.number.int( {max: 1000} )
     }
 
+let employeeCreation: EmployeeDetails
+
+let pimRedirection: NavigationPanel
+
+
 test.beforeEach('Log in to Orange', async ({ page }) => {
 
+    employeeCreation = new EmployeeDetails(page)
+
+    pimRedirection = new NavigationPanel(page)
+    
     await page.goto('')
-
-    const loggingIn = new LoginPage(page)
-
-    await loggingIn.login(USERNAME, PASSWORD)
-
-    const pimRedirection = new NavigationPanel(page)
-
-    await pimRedirection.getAnyNavPanelItem('PIM').click()
 
 })
 
 test('New employee creation', async ({ page }) => {
 
-    test.setTimeout(90000)
-
-    const employeeCreation = new EmployeeDetails(page)
+    await pimRedirection.getAnyNavPanelItem('PIM').click()
 
     await employeeCreation.creatingNewEmployee(user.firstName, user.lastName, user.Id)
 
@@ -46,9 +43,7 @@ test('New employee creation', async ({ page }) => {
 
 test('Adding user personal data', async ({ page }) =>{
 
-    const personalDetails = new EmployeeDetails(page)
-
-    await personalDetails.gettingFirstUser()
+    await employeeCreation.gettingFirstUser()
 
     const middleName = faker.person.firstName()
 
@@ -56,39 +51,39 @@ test('Adding user personal data', async ({ page }) =>{
 
     const driverL = faker.string.alphanumeric({length: {min: 8, max: 11}})
 
-    await personalDetails.gettingInputByIndex(2).fill(middleName)
+    await employeeCreation.gettingInputByIndex(2).fill(middleName)
 
     console.log(middleName)
 
-    await personalDetails.gettingInputByIndex(5).fill(String(otherId))
+    await employeeCreation.gettingInputByIndex(5).fill(String(otherId))
 
     console.log(otherId)
 
-    await personalDetails.gettingInputByIndex(6).fill(driverL)
+    await employeeCreation.gettingInputByIndex(6).fill(driverL)
 
     console.log(driverL)
 
-    await personalDetails.calendarAddingDate()
+    await employeeCreation.calendarAddingDate()
 
-    await personalDetails.addingAndorranNationality()
+    await employeeCreation.addingAndorranNationality()
     
-    await personalDetails.settingOtherMatrialStatus()
+    await employeeCreation.settingOtherMatrialStatus()
 
-    await personalDetails.gettingInputByIndex(8).fill('1987-12-12')
+    await employeeCreation.gettingInputByIndex(8).fill('1987-12-12')
 
-    await personalDetails.settingMaleGender()
+    await employeeCreation.settingMaleGender()
     
-    await personalDetails.settingBloodType()
+    await employeeCreation.settingBloodType()
 
-    await personalDetails.gettingInputByIndex(9).fill('This is just a test.')
+    await employeeCreation.gettingInputByIndex(9).fill('This is just a test.')
 
-    await personalDetails.addButton.click()
+    await employeeCreation.addButton.click()
 
     await page.locator('input[type=file]').setInputFiles('pictures/my_pic.jpg')
 
     await page.getByRole('button', { name: 'Save' }).nth(2).click() // This has to has a selector in class
     
-    await expect(personalDetails.successToastMessage).toBeVisible()
+    await expect(employeeCreation.successToastMessage).toBeVisible()
 
     console.log('Adding user personal data test has passed :)')
     
@@ -96,25 +91,23 @@ test('Adding user personal data', async ({ page }) =>{
 
 test.skip('Successfull edit of the user data', async({page}) =>{
 
-    const personalDetails = new EmployeeDetails(page)
+    await employeeCreation.gettingFirstUser()
 
-    await personalDetails.gettingFirstUser()
+    await employeeCreation.gettingInputByIndex(1).fill('')
 
-    await personalDetails.gettingInputByIndex(1).fill('')
+    await employeeCreation.gettingInputByIndex(1).fill('Teddy')
 
-    await personalDetails.gettingInputByIndex(1).fill('Teddy')
+    await employeeCreation.gettingInputByIndex(3).fill('Junior')
 
-    await personalDetails.gettingInputByIndex(3).fill('Junior')
+    await expect(employeeCreation.gettingInputByIndex(1)).toHaveValue('Teddy')
 
-    await expect(personalDetails.gettingInputByIndex(1)).toHaveValue('Teddy')
+    await expect(employeeCreation.gettingInputByIndex(3)).toHaveValue('Junior')
 
-    await expect(personalDetails.gettingInputByIndex(3)).toHaveValue('Junior')
+    await employeeCreation.noValidMessage()
 
-    await personalDetails.noValidMessage()
+    await employeeCreation.saveAdditionalButton.click()
 
-    await personalDetails.saveAdditionalButton.click()
-
-    await expect(personalDetails.successUpdatedToast).toBeVisible()
+    await expect(employeeCreation.successUpdatedToast).toBeVisible()
 
     await page.reload()
 
@@ -125,21 +118,21 @@ test.skip('Successfull edit of the user data', async({page}) =>{
 
 test.skip('Unsuccessfull edit of the user data', async({page}) =>{
 
-    const personalDetails = new EmployeeDetails(page)
+    const employeeCreation = new EmployeeDetails(page)
 
-    await personalDetails.gettingFirstUser()
+    await employeeCreation.gettingFirstUser()
 
-    await personalDetails.noValidMessage()
+    await employeeCreation.noValidMessage()
 
-    await personalDetails.gettingInputByIndex(1).fill('')
+    await employeeCreation.gettingInputByIndex(1).fill('')
 
-    await personalDetails.gettingInputByIndex(3).fill('')
+    await employeeCreation.gettingInputByIndex(3).fill('')
 
-    await personalDetails.saveAdditionalButton.click()
+    await employeeCreation.saveAdditionalButton.click()
     
-    await personalDetails.validMessage()
+    await employeeCreation.validMessage()
 
-    await expect(personalDetails.successToastMessage).not.toBeVisible()
+    await expect(employeeCreation.successToastMessage).not.toBeVisible()
 
 })
 
@@ -147,9 +140,9 @@ test('Deleting a user', async ({ page }) =>{
 
     const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8')); // This 'takes' user data from the tmp file and allows to use that data later in the test (line 155)
 
-    const personalDetails = new EmployeeDetails(page)
+    const employeeCreation = new EmployeeDetails(page)
 
-    await personalDetails.gettingInputByIndex(2).fill(String(user.Id))
+    await employeeCreation.gettingInputByIndex(2).fill(String(user.Id))
 
     await page.getByRole('button', { name: 'Search' }).click()
 
@@ -166,18 +159,21 @@ test('Deleting a user', async ({ page }) =>{
 
 test.skip('Linking methods, classes and locators', async ({ page }) =>{
 
-    // For now this is only a test function that checks how to link a method 
-    // and locator from one class to another
+    // Commented for now, showed a lot of errors after adding setup login test. 
+    // The class has to be imported again.
 
-    const employeeCreation = new EmployeeDetails(page)
+    // For now this is only a test function that checks how to link a method...
+    // ...and locator from one class to another
 
-    const personalDetails = new EditingPersonalDetails(page)
+    // const employeeCreation = new EmployeeDetails(page)
+
+    // const employeeCreation = new EditingemployeeCreation(page)
 
 })
 
 test.skip('looking for correct locator', async ({ page }) =>{
 
-    const personalDetails = new EmployeeDetails(page)
+    const employeeCreation = new EmployeeDetails(page)
     
     const user0 = page.locator('div.oxd-table-body>div>>nth=0')
     await user0.click()
