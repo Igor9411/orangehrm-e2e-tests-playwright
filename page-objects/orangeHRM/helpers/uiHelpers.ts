@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test'
+import { Page, Locator } from '@playwright/test'
 
 export class UiHelpers {
 
@@ -47,6 +47,14 @@ export class UiHelpers {
     gettingAnyDropdownItem( name:string ): Locator{ 
 
         return this.dropdownOptionItem.filter({ hasText: name })
+
+    }
+
+    // This is a combination of gettingAnyTopBarItem + gettingAnyTopBarMenuItem
+    async gettingTopBarMenuItem (topBar: string, menuItem:string){
+
+        await this.topBarItem.filter({hasText: topBar}).click()
+        await this.topBarMenuItem.filter({ hasText: menuItem }).click()
 
     }
 }

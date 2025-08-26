@@ -20,7 +20,7 @@ test('Successfull logout from orangeHRM', async ({ page }) => {
 
     await loggingOut.logout()
 
-    // These 3 below are not needed, can be deleted, but I leave them for now.
+    // These 3 below are not needed, can be deleted, but I left them for now.
 
     await page.getByRole('textbox', { name: 'Username' }).isVisible()
     

@@ -18,13 +18,15 @@ export class Leave {
 
     noRadioButton: Locator
 
+
+
     constructor(page: Page){
 
         this.page = page
 
         this.dropdownItem = page.getByRole('option')
 
-        this.monthPicker = page.locator('.oxd-select-text-input')
+        this.monthPicker = page.locator('.oxd-select-text-input') // This one also applies to leave type input selector 
 
         this.saveButton = page.getByRole('button', { name: 'Save' })
 

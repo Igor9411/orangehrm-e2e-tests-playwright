@@ -6,7 +6,9 @@
   "directories": {
     "test": "tests"
   },
-  "scripts": {},
+  "scripts": {
+    "login-project-setup": "npx playwright test --project=setup"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Igor9411/orangehrm-e2e-tests-playwright.git"

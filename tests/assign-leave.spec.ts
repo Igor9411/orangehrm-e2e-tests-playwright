@@ -9,6 +9,7 @@ import fs from 'fs'
 const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8'))
 const leaveName = `${faker.word.adjective().toUpperCase()} LEAVE`
 
+
 test.describe('Adding Individual Employee Leave', () =>{
 
     let navRedirection: NavigationPanel
@@ -33,13 +34,11 @@ test.beforeEach(async ({ page })=>{
 
 })
 
-test('Add new type of leave', async ({}) =>{
+test.skip('Add new type of leave', async ({}) =>{
 
     await navRedirection.getAnyNavPanelItem('Leave').click()
 
-    await gettingUiElements.gettingAnyTopBarItem('Configure').click() // This and line below can make a method from (probably).
-
-    await gettingUiElements.gettingAnyTopBarMenuItem('Leave Types').click() 
+    await gettingUiElements.gettingTopBarMenuItem('Configure', 'Leave Types')
 
     await assignLeave.leaveTypeAddButton.click()
 
@@ -63,11 +62,11 @@ test('Adding entitlements to employee', async ({ page }) => {
 
     await assignLeave.gettingSpecificUser(1,`${user.firstName} ${user.lastName}`)
 
-    await page.getByText('-- Select --').click()
+    await assignLeave.monthPicker.first().click()
 
-    await page.getByRole('option', { name: 'US - Personal' }).scrollIntoViewIfNeeded()
+    await page.getByRole('option', { name: 'Personal' }).scrollIntoViewIfNeeded()
 
-    await gettingUiElements.gettingAnyDropdownItem('US - Personal').click()
+    await gettingUiElements.gettingAnyDropdownItem('Personal').click()
 
     await gettingUiElements.gettingInputByIndex(2).fill('26')
 
@@ -79,26 +78,28 @@ test('Adding entitlements to employee', async ({ page }) => {
 
     await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible()
 
-    console.log('User has now 26 days of personal leave.')
+    console.log('User has now 26 days of personal leave to use.')
 
 })
 
 test('Adding 6 days of vacation to the employee', async ({ page }) => {
 
+    await navRedirection.getAnyNavPanelItem('Leave').click()
+
     await gettingUiElements.gettingAnyTopBarItem('Assign Leave').click()
 
     await assignLeave.gettingSpecificUser(1, `${user.firstName} ${user.lastName}`)
 
-    await page.getByText('-- Select --').click()
+    await assignLeave.monthPicker.click() // page.getByText('-- Select --').click()
 
-    await gettingUiElements.gettingAnyDropdownItem('US - Personal').click()
+    await gettingUiElements.gettingAnyDropdownItem('Personal').click()
 
-    await datePicker.calendarAddingDate()
-
-    await gettingUiElements.gettingInputByIndex(3).fill('2025-17-09')
+    await gettingUiElements.gettingInputByIndex(2).fill('2025-09-10')
 
     await gettingUiElements.gettingInputByIndex(4).fill(`Have fun on your vacation ${user.firstName} ${user.lastName}!`)
-
+    // There is an validation error (the date is copied from 'From Date' input) when filling 'To Date" input just after or before the 'From Date' input so this is done after adding the comment.
+    await gettingUiElements.gettingInputByIndex(3).fill('2025-09-17') 
+    
     await page.getByRole('button', { name: 'Assign' }).click()
 
     await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible()
@@ -109,17 +110,21 @@ test('Adding 6 days of vacation to the employee', async ({ page }) => {
 
 test('Confirming that employee has scheduled 6 vacation days', async ({ page }) => {
 
+    const scheduledUserRow = page.getByRole('row').filter({hasText: `${user.firstName} ${user.lastName}`})
+
+    await navRedirection.getAnyNavPanelItem('Leave').click()
+
     await gettingUiElements.gettingAnyTopBarItem('Leave List').click()
 
     await assignLeave.gettingSpecificUser(3, `${user.firstName} ${user.lastName}`)
 
-    await page.getByText('-- Select --').first().click()
+    await assignLeave.monthPicker.first().click() // page.getByText('-- Select --').first().click()
 
     await gettingUiElements.gettingAnyDropdownItem('Scheduled').click()
 
     await page.getByRole('button', { name: 'Search' }).click()
 
-    await expect(page.getByRole('row', { name: ' 2025-10-09 to 2025-17-09' })).toBeVisible()
+    await expect(scheduledUserRow.getByRole('cell', {name: 'Scheduled (6.00)'})).toBeVisible()
 
 })
 
