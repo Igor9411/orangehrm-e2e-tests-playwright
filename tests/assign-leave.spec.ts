@@ -54,7 +54,7 @@ test('Adding entitlements to employee', async ({ page }) => {
 
     await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible()
 
-    await gettingUiElements.gettingAnyTopBarItem('Entitlements').click() // This and line below can make a method from (probably).
+    await gettingUiElements.gettingAnyTopBarItem('Entitlements').click() 
 
     await gettingUiElements.gettingAnyTopBarMenuItem('Add Entitlements').click()
 
@@ -90,7 +90,7 @@ test('Adding 6 days of vacation to the employee', async ({ page }) => {
 
     await assignLeave.gettingSpecificUser(1, `${user.firstName} ${user.lastName}`)
 
-    await assignLeave.monthPicker.click() // page.getByText('-- Select --').click()
+    await assignLeave.monthPicker.click()
 
     await gettingUiElements.gettingAnyDropdownItem('Personal').click()
 
@@ -118,7 +118,7 @@ test('Confirming that employee has scheduled 6 vacation days', async ({ page }) 
 
     await assignLeave.gettingSpecificUser(3, `${user.firstName} ${user.lastName}`)
 
-    await assignLeave.monthPicker.first().click() // page.getByText('-- Select --').first().click()
+    await assignLeave.monthPicker.first().click()
 
     await gettingUiElements.gettingAnyDropdownItem('Scheduled').click()
 
