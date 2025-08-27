@@ -12,6 +12,12 @@ export class UiHelpers {
 
     inputSelector: Locator // This has to be taken from gettinganyinputbyindex 
 
+    confirmationDialog: Locator // This has to be found in other classes and deleted (this is the only place for it)
+
+    dialogDeleteButton: Locator // This has to be found in other classes and deleted (this is the only place for it)
+
+    deleteConfirmationToastMessage: Locator // This has to be found in other classes and deleted (this is the only place for it)
+
     constructor(page: Page){
 
         this.page = page
@@ -23,6 +29,12 @@ export class UiHelpers {
         this.dropdownOptionItem = page.getByRole('option')
 
         this.inputSelector = page.getByRole('textbox')
+
+        this.confirmationDialog = page.getByText('×Are you Sure?The selected')
+
+        this.dialogDeleteButton = page.getByRole('button', { name: ' Yes, Delete' })
+
+        this.deleteConfirmationToastMessage = page.getByText('SuccessSuccessfully Deleted×')
 
     }
 

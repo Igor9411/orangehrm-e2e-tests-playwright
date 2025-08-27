@@ -10,7 +10,7 @@ const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8'))
 const leaveName = `${faker.word.adjective().toUpperCase()} LEAVE`
 
 
-test.describe('Adding Individual Employee Leave', () =>{
+test.describe('Adding Individual Employee Leave', () => {
 
     let navRedirection: NavigationPanel
 
@@ -20,7 +20,7 @@ test.describe('Adding Individual Employee Leave', () =>{
 
     let datePicker: EmployeeDetails
 
-test.beforeEach(async ({ page })=>{
+test.beforeEach(async ({ page }) => {
 
     navRedirection = new NavigationPanel (page)
 
@@ -32,11 +32,11 @@ test.beforeEach(async ({ page })=>{
 
     await page.goto('')
 
+    await navRedirection.getAnyNavPanelItem('Leave').click()
+
 })
 
-test.skip('Add new type of leave', async ({}) =>{
-
-    await navRedirection.getAnyNavPanelItem('Leave').click()
+test.skip('Add new type of leave', async ({}) => {
 
     await gettingUiElements.gettingTopBarMenuItem('Configure', 'Leave Types')
 
@@ -49,8 +49,6 @@ test.skip('Add new type of leave', async ({}) =>{
 })
 
 test('Adding entitlements to employee', async ({ page }) => {
-
-    await navRedirection.getAnyNavPanelItem('Leave').click()
 
     await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible()
 
@@ -84,8 +82,6 @@ test('Adding entitlements to employee', async ({ page }) => {
 
 test('Adding 6 days of vacation to the employee', async ({ page }) => {
 
-    await navRedirection.getAnyNavPanelItem('Leave').click()
-
     await gettingUiElements.gettingAnyTopBarItem('Assign Leave').click()
 
     await assignLeave.gettingSpecificUser(1, `${user.firstName} ${user.lastName}`)
@@ -111,8 +107,6 @@ test('Adding 6 days of vacation to the employee', async ({ page }) => {
 test('Confirming that employee has scheduled 6 vacation days', async ({ page }) => {
 
     const scheduledUserRow = page.getByRole('row').filter({hasText: `${user.firstName} ${user.lastName}`})
-
-    await navRedirection.getAnyNavPanelItem('Leave').click()
 
     await gettingUiElements.gettingAnyTopBarItem('Leave List').click()
 
