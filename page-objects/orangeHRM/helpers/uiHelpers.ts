@@ -18,6 +18,12 @@ export class UiHelpers {
 
     deleteConfirmationToastMessage: Locator // This has to be found in other classes and deleted (this is the only place for it)
 
+    successfullySavedToastMessage: Locator // This has to be found in other classes and deleted (this is the only place for it)
+
+    addButton: Locator
+
+    saveButton: Locator
+
     constructor(page: Page){
 
         this.page = page
@@ -30,11 +36,23 @@ export class UiHelpers {
 
         this.inputSelector = page.getByRole('textbox')
 
+        // Dialogs
+
         this.confirmationDialog = page.getByText('×Are you Sure?The selected')
 
         this.dialogDeleteButton = page.getByRole('button', { name: ' Yes, Delete' })
 
+        // Toast Messages
+
         this.deleteConfirmationToastMessage = page.getByText('SuccessSuccessfully Deleted×')
+
+        this.successfullySavedToastMessage = page.getByText('SuccessSuccessfully Saved×')
+
+        // Buttons
+
+        this.addButton = page.getByRole('button', { name: ' Add' })
+
+        this.saveButton = page.getByRole('button', { name: 'Save' })
 
     }
 

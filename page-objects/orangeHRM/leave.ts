@@ -6,21 +6,19 @@ export class Leave {
 
     readonly page:Page
 
+    readonly gettingUiElements: UiHelpers
+
     dropdownItem: Locator
 
     monthPicker: Locator
 
-    saveButton: Locator // This locator is probably in some other class, has to find it and import it here!
-
     individualEmployeeRadioButton: Locator
-
-    leaveTypeAddButton: Locator
 
     noRadioButton: Locator
 
-
-
     constructor(page: Page){
+
+        this.gettingUiElements = new UiHelpers (page)
 
         this.page = page
 
@@ -28,12 +26,8 @@ export class Leave {
 
         this.monthPicker = page.locator('.oxd-select-text-input') // This one also applies to leave type input selector 
 
-        this.saveButton = page.getByRole('button', { name: 'Save' })
-
         this.individualEmployeeRadioButton = page.getByText('Individual Employee')
         
-        this.leaveTypeAddButton = page.getByRole('button', { name: ' Add' })
-
         this.noRadioButton = page.getByText('No')
     }
 
@@ -64,7 +58,7 @@ export class Leave {
 
         await uiHelper.gettingAnyDropdownItem('01').click()
 
-        await this.saveButton.click()
+        await this.gettingUiElements.saveButton.click()
 
     }
 
@@ -76,7 +70,7 @@ export class Leave {
 
         await this.noRadioButton.click()
 
-        await this.saveButton.click()
+        await this.gettingUiElements.saveButton.click()
 
     }
 

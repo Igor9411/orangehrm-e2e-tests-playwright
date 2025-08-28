@@ -1,14 +1,12 @@
 import { Page, Locator, expect, test } from '@playwright/test'
 import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts'
-import { Leave } from '../page-objects/orangeHRM/leave.ts'
 import { faker } from '@faker-js/faker'
 
 let gettingUiElements: UiHelpers 
 
 let navRedirection: NavigationPanel
 
-let leave: Leave
 
 test.describe('Job creation/deletion and validation', () => {
 
@@ -20,8 +18,6 @@ test.beforeEach(async ({ page }) => {
     
     navRedirection = new NavigationPanel (page)
 
-    leave = new Leave (page)
-
     await page.goto('')
 
     await navRedirection.getAnyNavPanelItem('Admin').click()
@@ -30,7 +26,7 @@ test.beforeEach(async ({ page }) => {
 
     await gettingUiElements.gettingAnyTopBarMenuItem('Job Titles').click()
 
-    await leave.leaveTypeAddButton.click()
+    await gettingUiElements.addButton.click()
 
 })
 
@@ -46,9 +42,9 @@ test('Adding a job', async ({ page })=>{
 
     await gettingUiElements.gettingInputByIndex(3).fill(`This is a note of a ${jobTitle} and it is a little bit longer than a description and much longer then the title.`)
 
-    await leave.saveButton.click()
+    await gettingUiElements.saveButton.click()
 
-    await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible() // This locator has to be added to uihelerps class.
+    await expect(gettingUiElements.successfullySavedToastMessage).toBeVisible()
 
     await expect(page.getByRole('row', { name: ` ${jobTitle}` })).toBeVisible()
 
@@ -60,9 +56,9 @@ test('Validation for duplicate job title', async ({ page }) => {
 
     await gettingUiElements.gettingInputByIndex(1).fill(jobTitle)
 
-    await leave.saveButton.click()
+    await gettingUiElements.saveButton.click()
 
-    await expect(page.getByText('SuccessSuccessfully Saved×')).not.toBeVisible()
+    await expect(gettingUiElements.successfullySavedToastMessage).not.toBeVisible()
 
     await expect(page.getByText('Already exists')).toBeVisible()
 

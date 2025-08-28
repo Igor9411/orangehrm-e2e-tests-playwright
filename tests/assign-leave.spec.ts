@@ -36,11 +36,11 @@ test.beforeEach(async ({ page }) => {
 
 })
 
-test.skip('Add new type of leave', async ({}) => {
+test('Add new type of leave', async ({}) => {
 
     await gettingUiElements.gettingTopBarMenuItem('Configure', 'Leave Types')
 
-    await assignLeave.leaveTypeAddButton.click()
+    await gettingUiElements.addButton.click()
 
     await assignLeave.creatingLeaveType(leaveName)
 
@@ -68,13 +68,13 @@ test('Adding entitlements to employee', async ({ page }) => {
 
     await gettingUiElements.gettingInputByIndex(2).fill('26')
 
-    await assignLeave.saveButton.click()
+    await gettingUiElements.saveButton.click()
 
     await expect(page.getByText('×Updating EntitlementExisting')).toBeVisible()
 
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible()
+    await expect(gettingUiElements.successfullySavedToastMessage).toBeVisible()
 
     console.log('User has now 26 days of personal leave to use.')
 
@@ -98,7 +98,7 @@ test('Adding 6 days of vacation to the employee', async ({ page }) => {
     
     await page.getByRole('button', { name: 'Assign' }).click()
 
-    await expect(page.getByText('SuccessSuccessfully Saved×')).toBeVisible()
+    await expect(gettingUiElements.successfullySavedToastMessage).toBeVisible()
 
     console.log('Users has scheduled 6 days of vacation in September.')
 

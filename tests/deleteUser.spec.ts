@@ -12,7 +12,7 @@ test('Deletion of a user', async ({ page }) => {
 
     deleteUser = new UserDeletion (page)
 
-    const userId = '977' // The ID of a user that will be deleted.
+    const userId = '105' // The ID of a user that will be deleted.
 
     await page.goto('')
 
@@ -22,6 +22,6 @@ test('Deletion of a user', async ({ page }) => {
 
     await expect(deleteUser.userRow.filter({hasText: userId})).not.toBeVisible()
 
-    await expect(page).toHaveURL('http://localhost:8080/web/index.php/pim/viewEmployeeList')
+    await expect(page).toHaveURL(/\pim\/viewEmployeeList$/)
 
 })
