@@ -20,6 +20,8 @@ export class UiHelpers {
 
     successfullySavedToastMessage: Locator // This has to be found in other classes and deleted (this is the only place for it)
 
+    noRecordsToastMessage: Locator
+    
     addButton: Locator
 
     saveButton: Locator
@@ -47,6 +49,8 @@ export class UiHelpers {
         this.deleteConfirmationToastMessage = page.getByText('SuccessSuccessfully Deleted×')
 
         this.successfullySavedToastMessage = page.getByText('SuccessSuccessfully Saved×')
+
+        this.noRecordsToastMessage = page.getByText('InfoNo Records Found')
 
         // Buttons
 
