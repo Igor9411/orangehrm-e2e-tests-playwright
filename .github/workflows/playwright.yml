@@ -4,8 +4,11 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  schedule:
+    - cron: '0 3 * * *'
 jobs:
   test:
+    name: OrangeHrm E2E Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -14,9 +17,9 @@ jobs:
       with:
         node-version: lts/*
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --force
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install --with-deps --force
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
