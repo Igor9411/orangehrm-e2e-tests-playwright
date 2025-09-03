@@ -1,5 +1,5 @@
 import { Page, Locator, expect, test } from '@playwright/test'
-import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers'
+import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts'
 import { faker } from '@faker-js/faker'
 
