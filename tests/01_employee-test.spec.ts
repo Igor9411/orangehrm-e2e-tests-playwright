@@ -157,25 +157,3 @@ test('Deleting a user', async ({ page }) =>{
     console.log("Last user has been clicked.")
 })
 
-test.skip('Linking methods, classes and locators', async ({ page }) =>{
-
-    // Commented for now, showed a lot of errors after adding setup login test. 
-    // The class has to be imported again.
-
-    // For now this is only a test function that checks how to link a method...
-    // ...and locator from one class to another
-
-    // const employeeCreation = new EmployeeDetails(page)
-
-    // const employeeCreation = new EditingemployeeCreation(page)
-
-})
-
-test.skip('looking for correct locator', async ({ page }) =>{
-
-    const employeeCreation = new EmployeeDetails(page)
-    
-    const user0 = page.locator('div.oxd-table-body>div>>nth=0')
-    await user0.click()
-})
-

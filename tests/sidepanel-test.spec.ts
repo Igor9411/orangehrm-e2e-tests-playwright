@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts'
 import { LoginPage } from '../page-objects/orangeHRM/login.ts'
 import { USERNAME, PASSWORD } from '../env.ts'
@@ -20,5 +20,7 @@ test('Just checking', async ({ page }) => {
     await sidePanel.checkAllINavItems()
 
     await sidePanel.getAnyNavPanelItem('PIM').click()
+
+    await expect(page).toHaveScreenshot('navigation-panel-page-expected.png', {fullPage: true})
 
 })
