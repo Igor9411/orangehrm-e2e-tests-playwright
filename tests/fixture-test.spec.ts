@@ -1,8 +1,8 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
 
-test('fixture creation', async ({ webApp }) => {
+test('fixture creation', async ({ webApp, page }) => {
 
-    await expect(webApp).toHaveURL('http://localhost:8080/web/index.php/dashboard/index')
+    await expect(page).toHaveURL('http://localhost:8080/web/index.php/dashboard/index')
 
-    await expect(webApp.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
 })

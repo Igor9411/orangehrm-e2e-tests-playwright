@@ -1,17 +1,34 @@
-import { test, expect } from '@playwright/test'
+import { test as base, expect } from '@playwright/test'
 import { USERNAME, PASSWORD } from '/Users/igorl/Documents/GitHub/orangehrm-e2e-tests-playwright/env'
+import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 
-exports.expect = expect
-exports.test = test.extend({
-    webApp: async ({ page }, use) => {
+export { expect } from '@playwright/test'
+
+type myFixtures = {
+
+    webApp: any
+    uiHelpers: UiHelpers
+
+}
+
+
+export const test = base.extend<myFixtures>({
+    uiHelpers: async ({ page }, use) =>{
+
+            await use(new UiHelpers(page))
+
+        },
+    webApp: async ({ page, uiHelpers }, use) => {
+
             await page.goto('')
     
-            await page.getByRole('textbox', { name: 'Username' }).fill(USERNAME)
+            await uiHelpers.gettingInputByIndex(0).fill(USERNAME)
     
-            await page.getByRole('textbox', { name: 'Password' }).fill(PASSWORD)
+            await uiHelpers.gettingInputByIndex(1).fill(PASSWORD)
     
             await page.getByRole('button', { name: 'Login' }).click()
     
-            await use(page)
+            await use(uiHelpers)
+
         }
 })
