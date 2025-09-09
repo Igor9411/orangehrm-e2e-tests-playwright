@@ -1,15 +1,11 @@
-import { test as setup } from '@playwright/test'
-import { LoginPage } from '../page-objects/orangeHRM/login.ts'
-import { USERNAME, PASSWORD } from '../env.ts'
+import { test as setup, expect } from '../tests/fixtures/webApp.fixture.ts'
 
-setup('Write login session data', async({ page }) => {
-
-    const loginPage = new LoginPage (page)
-
-    await page.goto('')
+setup('Write login session data', async({ webApp }) => {
         
-    await loginPage.login(USERNAME, PASSWORD)
+    await expect(webApp).toHaveURL(/dashboard\/index/) // This instead of the full link - http://localhost:8080/web/index.php/dashboard/index'
+    
+    await expect(webApp.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
 
-    await page.context().storageState({ path: '.auth/login.json'})
+    await webApp.context().storageState({ path: '.auth/login.json'})
         
 })
