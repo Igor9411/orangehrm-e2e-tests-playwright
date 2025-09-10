@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test'
 
 export class UiHelpers {
 
-    readonly page:Page
+    readonly page: Page
 
     topBarItem: Locator 
 

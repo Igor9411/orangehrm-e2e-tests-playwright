@@ -1,15 +1,23 @@
-import { test, expect, } from '@playwright/test';
+
+import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
 import { EmployeeDetails } from '../page-objects/orangeHRM/actions.ts'
 import { faker } from '@faker-js/faker'
 import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
-import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
 import fs from 'fs'
 
 const user = {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        Id: faker.number.int( {max: 1000} )
+        middleName: faker.person.middleName(),
+        Id: faker.number.int( {max: 1000} ),
+        otherId: faker.number.int( {min: 1000, max: 2000} ),
+        nickname: faker.internet.username(),
+        driverLicense: faker.string.alphanumeric({length: {min: 8, max: 11}})
     }
+
+const date = faker.date.between
+
+console.log(date)
 
 let employeeCreation: EmployeeDetails
 
@@ -26,7 +34,7 @@ test.beforeEach('Log in to Orange', async ({ page }) => {
 
 })
 
-test('New employee creation', async ({ page }) => {
+test.skip('New employee creation', async ({ page }) => {
 
     await pimRedirection.getAnyNavPanelItem('PIM').click()
 
@@ -41,7 +49,34 @@ test('New employee creation', async ({ page }) => {
     
 })
 
-test('Adding user personal data', async ({ page }) =>{
+
+
+test('Create new employee', async ({ startPage, workflow }) => {
+
+    await workflow.createEmployee(user.firstName, user.lastName, user.Id)
+
+    await expect(startPage.getByRole('heading').filter({ hasText: `${user.firstName} ${user.lastName}`})).toBeVisible()
+ 
+
+})
+
+test('Adding user personal data', async ({ workflow, uiHelpers }) => {
+
+    await workflow.createEmployee(user.firstName, user.lastName, user.Id)
+
+    await uiHelpers.gettingInputByIndex(2).fill(user.middleName)
+
+    await uiHelpers.gettingInputByIndex(4).fill(user.nickname)
+
+    await uiHelpers.gettingInputByIndex(6).fill(String(user.otherId))
+
+    await uiHelpers.gettingInputByIndex(7).fill(user.driverLicense)
+
+    await uiHelpers.gettingInputByIndex(8).fill('2025-12-24')
+
+})
+
+test('Adding user personassl data', async ({ page }) =>{
 
     await employeeCreation.gettingFirstUser()
 
@@ -88,6 +123,7 @@ test('Adding user personal data', async ({ page }) =>{
     console.log('Adding user personal data test has passed :)')
     
 })
+
 
 test.skip('Successfull edit of the user data', async({page}) =>{
 
@@ -136,7 +172,7 @@ test.skip('Unsuccessfull edit of the user data', async({page}) =>{
 
 })
 
-test('Deleting a user', async ({ page }) =>{
+test.skip('Deleting a user', async ({ page }) =>{
 
     const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8')); // This 'takes' user data from the tmp file and allows to use that data later in the test (line 155)
 

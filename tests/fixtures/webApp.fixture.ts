@@ -2,6 +2,7 @@ import { test as base, Page } from '@playwright/test'
 import { USERNAME, PASSWORD } from '/Users/igorl/Documents/GitHub/orangehrm-e2e-tests-playwright/env'
 import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
+import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
 
 export { expect } from '@playwright/test'
 
@@ -11,22 +12,30 @@ type myFixtures = {
     uiHelpers: UiHelpers
     navigationPanel: NavigationPanel
     startPage: Page
-
+    workflow: Workflow
 }
 
 
 export const test = base.extend<myFixtures>({
-    uiHelpers: async ({ page }, use: (fixture: UiHelpers) => Promise<void>) =>{
+    
+    uiHelpers: async ({ page }, use: (fixture: UiHelpers) => Promise<void>) => {
 
-            await use( new UiHelpers ( page ) )
+            await use( new UiHelpers ( page ))
 
         },
 
-    navigationPanel: async ({ page }, use: (fixture: NavigationPanel) => Promise<void>) =>{
+    navigationPanel: async ({ page }, use: (fixture: NavigationPanel) => Promise<void>) => {
 
-            await use( new NavigationPanel ( page ) )
+            await use( new NavigationPanel ( page ))
 
         }, 
+
+    workflow: async ({ page}, use: (fixture: Workflow) => Promise<void>) => {
+
+            await use( new Workflow (page))
+        
+        },
+
     webApp: async ({ page, uiHelpers }, use:(fixture: any) => Promise<void>) => {
 
             await page.goto('')
