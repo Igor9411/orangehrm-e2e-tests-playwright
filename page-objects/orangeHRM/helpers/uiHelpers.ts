@@ -12,6 +12,8 @@ export class UiHelpers {
 
     inputSelector: Locator // This has to be taken from gettinganyinputbyindex 
 
+    selectInput: Locator
+
     confirmationDialog: Locator // This has to be found in other classes and deleted (this is the only place for it)
 
     dialogDeleteButton: Locator // This has to be found in other classes and deleted (this is the only place for it)
@@ -37,6 +39,8 @@ export class UiHelpers {
         this.dropdownOptionItem = page.getByRole('option')
 
         this.inputSelector = page.getByRole('textbox')
+
+        this.selectInput = page.getByText('-- Select --')
 
         // Dialogs
 

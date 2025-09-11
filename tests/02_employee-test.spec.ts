@@ -9,15 +9,15 @@ const user = {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         middleName: faker.person.middleName(),
-        Id: faker.number.int( {max: 1000} ),
+        Id: faker.number.int( {max: 10000} ),
         otherId: faker.number.int( {min: 1000, max: 2000} ),
         nickname: faker.internet.username(),
-        driverLicense: faker.string.alphanumeric({length: {min: 8, max: 11}})
+        driverLicense: faker.string.alphanumeric({length: {min: 8, max: 11}}),
+        birthDate: faker.date.between({ from: '1955-01-01', to: '2001-12-31' }),
+        military: faker.string.alpha()
     }
 
-const date = faker.date.between
-
-console.log(date)
+const formattedDate = user.birthDate.toISOString().slice(0,10)
 
 let employeeCreation: EmployeeDetails
 
@@ -60,7 +60,9 @@ test('Create new employee', async ({ startPage, workflow }) => {
 
 })
 
-test('Adding user personal data', async ({ workflow, uiHelpers }) => {
+test('Adding user personal data', async ({ workflow, uiHelpers, startPage }) => {
+
+    
 
     await workflow.createEmployee(user.firstName, user.lastName, user.Id)
 
@@ -72,11 +74,29 @@ test('Adding user personal data', async ({ workflow, uiHelpers }) => {
 
     await uiHelpers.gettingInputByIndex(7).fill(user.driverLicense)
 
-    await uiHelpers.gettingInputByIndex(8).fill('2025-12-24')
+    await uiHelpers.gettingInputByIndex(8).fill('2027-12-24')
+
+    await uiHelpers.selectInput.first().click()
+
+    await uiHelpers.gettingAnyDropdownItem('Polish').click()
+
+    await uiHelpers.selectInput.last().click()
+
+    await uiHelpers.gettingAnyDropdownItem('Single').click()
+
+    await uiHelpers.gettingInputByIndex(9).fill(formattedDate)
+
+    await startPage.getByText('Male', { exact: true }).click()
+
+    await uiHelpers.gettingInputByIndex(10).fill(user.military)
+
+    await startPage.getByText('Yes').click()
 
 })
 
 test('Adding user personassl data', async ({ page }) =>{
+
+
 
     await employeeCreation.gettingFirstUser()
 
