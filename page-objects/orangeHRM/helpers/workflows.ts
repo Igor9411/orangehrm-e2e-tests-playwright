@@ -34,7 +34,27 @@ export class Workflow {
 
         await this.uiHelpers.saveButton.click()
 
-        await expect(this.uiHelpers.successfullySavedToastMessage).toBeVisible()
+    }
+
+    async editEmployee(name: string, lastName: string, id:number){
+
+        await this.uiHelpers.gettingInputByIndex(1).fill(name)
+
+        await this.uiHelpers.gettingInputByIndex(3).fill(lastName)
+
+        await this.uiHelpers.gettingInputByIndex(5).fill(String(id))
+
+        await this.uiHelpers.saveButton.first().click()
+
+    }
+
+    async deleteEmployee (name:string){
+
+        await this.navigationPanel.getAnyNavPanelItem('PIM').click()
+
+        await this.uiHelpers.employeeRow.filter({hasText: name}).getByRole('button', { name: '' }).first().click()
+
+        await this.uiHelpers.deleteButton.click()
 
     }
 
