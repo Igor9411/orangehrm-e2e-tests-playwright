@@ -2,7 +2,7 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
 import { faker } from '@faker-js/faker'
 
-const user = {
+export const user = {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         middleName: faker.person.middleName(),
@@ -32,7 +32,7 @@ test('Create new employee', async ({ startPage, workflow, uiHelpers }) => {
     await workflow.deleteEmployee(user.firstName)
 })
 
-test('Adding user personal data', async ({ workflow, uiHelpers, startPage }) => {
+test('Adding employee personal data', async ({ workflow, uiHelpers, startPage }) => {
 
     await workflow.createEmployee(user.firstName, user.lastName, user.Id)
 
@@ -77,15 +77,15 @@ test('Adding user personal data', async ({ workflow, uiHelpers, startPage }) => 
 })
 
 
-test('Edit of the user data', async({ workflow, navigationPanel, uiHelpers, startPage}) =>{
+test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPage}) =>{
 
     await workflow.createEmployee(user.firstName, user.lastName, user.Id)
 
     await navigationPanel.getAnyNavPanelItem('PIM').click()
 
-    await expect(uiHelpers.employeeRow.filter({hasText: user.firstName})).toBeVisible()
+    await expect(uiHelpers.row.filter({hasText: user.firstName})).toBeVisible()
 
-    await uiHelpers.employeeRow.filter({hasText: user.firstName}).click()
+    await uiHelpers.row.filter({hasText: user.firstName}).click()
 
     await workflow.editEmployee(user.newFirstName, user.newLastName, user.newId)
 
@@ -93,18 +93,20 @@ test('Edit of the user data', async({ workflow, navigationPanel, uiHelpers, star
 
     await startPage.getByRole('link', { name: 'Employee List' }).click()
 
-    await expect(uiHelpers.employeeRow.filter({hasText: user.firstName})).not.toBeVisible()
+    await expect(uiHelpers.row.filter({hasText: user.firstName})).not.toBeVisible()
 
     await workflow.deleteEmployee(user.newFirstName)
 })
 
-test('Duplicate user cannot be created', async ({ startPage, workflow }) => {
+test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHelpers }) => {
 
     await workflow.createEmployee(user.firstName, user.lastName, user.Id)
 
     await workflow.createEmployee(user.firstName, user.lastName, user.Id)
 
     await expect(startPage.getByText('Employee Id already exists')).toBeVisible()
+
+    await expect(uiHelpers.succesfullyUpdatedToastMessage).not.toBeVisible()
 
     await expect(startPage).toHaveURL(/addEmployee/)
 
@@ -122,7 +124,7 @@ test('Delete employee', async ({ startPage, workflow, uiHelpers }) =>{
 
     await startPage.getByRole('row', { name: ' Id  First (& Middle) Name' }).waitFor({ state: 'visible' });
 
-    await expect(uiHelpers.employeeRow.filter({hasText: user.firstName})).not.toBeVisible()
+    await expect(uiHelpers.row.filter({hasText: user.firstName})).not.toBeVisible()
 
 })
 

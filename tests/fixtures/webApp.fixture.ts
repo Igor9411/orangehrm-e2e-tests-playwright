@@ -3,15 +3,17 @@ import { USERNAME, PASSWORD } from '/Users/igorl/Documents/GitHub/orangehrm-e2e-
 import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
 import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
+import { employee, leaveName} from '../testsData'
 
 export { expect } from '@playwright/test'
 
 type myFixtures = {
 
     webApp: Page
+    startPage: Page
+    leavePage: Page
     uiHelpers: UiHelpers
     navigationPanel: NavigationPanel
-    startPage: Page
     workflow: Workflow
 }
 
@@ -55,6 +57,23 @@ export const test = base.extend<myFixtures>({
             await page.goto('')
     
             await use(page)
+
+        },
+
+    leavePage: async ({ page, workflow }, use: (fixture: Page) => Promise<void>) => {
+
+            await page.goto('')
+
+            await workflow.createLeave(leaveName)
+
+            await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+    
+            await use(page)
+
+            await workflow.deleteLeave(leaveName)
+
+            await workflow.deleteEmployee(employee.firstName)
+        
 
         }
 })

@@ -1,126 +1,92 @@
-import { test, expect } from '@playwright/test'
-import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
-import { Leave } from '../page-objects/orangeHRM/leave.ts';
-import { EmployeeDetails } from '../page-objects/orangeHRM/actions.ts'
-import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
-import { faker } from '@faker-js/faker'
-import fs from 'fs'
+import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
+import { employee, leaveName} from '../tests/testsData.ts'
 
-const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8'))
-const leaveName = `${faker.word.adjective().toUpperCase()} LEAVE`
+test('New type of leave can be created', async ({ startPage, navigationPanel, uiHelpers, workflow}) => {
 
+    await workflow.createLeave(leaveName)
 
-test.describe('Adding Individual Employee Leave', () => {
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-    let navRedirection: NavigationPanel
+    await expect(startPage.getByRole('row').filter({hasText: leaveName})).toBeVisible()
 
-    let assignLeave: Leave 
-
-    let gettingUiElements: UiHelpers
-
-    let datePicker: EmployeeDetails
-
-test.beforeEach(async ({ page }) => {
-
-    navRedirection = new NavigationPanel (page)
-
-    assignLeave = new Leave (page)
-
-    gettingUiElements = new UiHelpers (page)
-
-    datePicker = new EmployeeDetails (page)
-
-    await page.goto('')
-
-    await navRedirection.getAnyNavPanelItem('Leave').click()
+    await workflow.deleteLeave(leaveName)
 
 })
 
-test('Add new type of leave', async ({}) => {
+test('Delete leave', async ({ startPage, uiHelpers, workflow}) => {
 
-    await gettingUiElements.gettingTopBarMenuItem('Configure', 'Leave Types')
+    await workflow.createLeave(leaveName)
 
-    await gettingUiElements.addButton.click()
+    await workflow.deleteLeave(leaveName)
 
-    await assignLeave.creatingLeaveType(leaveName)
+    await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
 
-    await expect(datePicker.successToastMessage).toBeVisible()
+    await startPage.getByRole('row', { name: ' Name Actions' }).waitFor({state: 'visible' })
 
-})
-
-test('Adding entitlements to employee', async ({ page }) => {
-
-    await expect(page.getByRole('heading', { name: 'Leave', exact: true })).toBeVisible()
-
-    await gettingUiElements.gettingAnyTopBarItem('Entitlements').click() 
-
-    await gettingUiElements.gettingAnyTopBarMenuItem('Add Entitlements').click()
-
-    await assignLeave.individualEmployeeRadioButton.click()
-
-    await assignLeave.gettingSpecificUser(1,`${user.firstName} ${user.lastName}`)
-
-    await assignLeave.monthPicker.first().click()
-
-    await page.getByRole('option', { name: 'Personal' }).scrollIntoViewIfNeeded()
-
-    await gettingUiElements.gettingAnyDropdownItem('Personal').click()
-
-    await gettingUiElements.gettingInputByIndex(2).fill('26')
-
-    await gettingUiElements.saveButton.click()
-
-    await expect(page.getByText('×Updating EntitlementExisting')).toBeVisible()
-
-    await page.getByRole('button', { name: 'Confirm' }).click()
-
-    await expect(gettingUiElements.successfullySavedToastMessage).toBeVisible()
-
-    console.log('User has now 26 days of personal leave to use.')
+    await expect(uiHelpers.row.filter({hasText: leaveName})).not.toBeVisible()
 
 })
 
-test('Adding 6 days of vacation to the employee', async ({ page }) => {
+test('Add entitlement to employee', async ({ leavePage, uiHelpers, navigationPanel}) => {
 
-    await gettingUiElements.gettingAnyTopBarItem('Assign Leave').click()
+    await navigationPanel.getAnyNavPanelItem('Leave').click()
 
-    await assignLeave.gettingSpecificUser(1, `${user.firstName} ${user.lastName}`)
+    await uiHelpers.gettingTopBarMenuItem('Entitlements', 'Add Entitlements')
 
-    await assignLeave.monthPicker.click()
+    await leavePage.getByText('Individual Employee').click()
 
-    await gettingUiElements.gettingAnyDropdownItem('Personal').click()
+    await uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
 
-    await gettingUiElements.gettingInputByIndex(2).fill('2025-09-10')
+    await expect(uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`})).toBeVisible()
 
-    await gettingUiElements.gettingInputByIndex(4).fill(`Have fun on your vacation ${user.firstName} ${user.lastName}!`)
-    // There is an validation error (the date is copied from 'From Date' input) when filling 'To Date" input just after or before the 'From Date' input so this is done after adding the comment.
-    await gettingUiElements.gettingInputByIndex(3).fill('2025-09-17') 
-    
-    await page.getByRole('button', { name: 'Assign' }).click()
+    await uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`}).click()
 
-    await expect(gettingUiElements.successfullySavedToastMessage).toBeVisible()
+    await uiHelpers.selectInput.click()
 
-    console.log('Users has scheduled 6 days of vacation in September.')
+    await expect(uiHelpers.dropdownOptionItem.filter({hasText: leaveName})).toBeVisible()
 
-})
+    await uiHelpers.dropdownOptionItem.filter({hasText: leaveName }).click()
 
-test('Confirming that employee has scheduled 6 vacation days', async ({ page }) => {
+    await expect(leavePage.getByText('-01-01 - 2025-12-31')).toHaveText('2025-01-01 - 2025-12-31')
 
-    const scheduledUserRow = page.getByRole('row').filter({hasText: `${user.firstName} ${user.lastName}`})
+    await uiHelpers.gettingInputByIndex(2).fill('10')
 
-    await gettingUiElements.gettingAnyTopBarItem('Leave List').click()
+    await uiHelpers.saveButton.click()
 
-    await assignLeave.gettingSpecificUser(3, `${user.firstName} ${user.lastName}`)
+    await uiHelpers.confimButton.click()
 
-    await assignLeave.monthPicker.first().click()
-
-    await gettingUiElements.gettingAnyDropdownItem('Scheduled').click()
-
-    await page.getByRole('button', { name: 'Search' }).click()
-
-    await expect(scheduledUserRow.getByRole('cell', {name: 'Scheduled (6.00)'})).toBeVisible()
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
 })
 
+test('Add days of leave to employee', async ({ uiHelpers, workflow, leavePage }) => {
+
+    await workflow.addEntitlement(employee.entitlementDays)
+
+    await uiHelpers.gettingAnyTopBarItem('Assign Leave').click()
+
+    await expect(leavePage.getByText('Day(s)')).toHaveText('0.00 Day(s)')
+
+    await uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
+
+    await uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`}).click()
+
+    await uiHelpers.selectInput.click()
+
+    await uiHelpers.dropdownOptionItem.filter({hasText: leaveName}).click()
+
+    await expect(leavePage.getByText('Day(s)')).toHaveText('10.00 Day(s)')
+
+    await uiHelpers.gettingInputByIndex(2).fill('2025-10-13')
+
+    await uiHelpers.gettingInputByIndex(4).fill(`${employee.firstName} ${employee.lastName} have fun on your leave!`)
+
+    await uiHelpers.gettingInputByIndex(3).fill('2025-10-17')
+
+    await uiHelpers.assignButton.click()
+
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
+
+    await expect(leavePage.getByText('Day(s)')).toHaveText('0.00 Day(s)')
 
 })

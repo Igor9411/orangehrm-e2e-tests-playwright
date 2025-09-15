@@ -32,7 +32,11 @@ export class UiHelpers {
     
     deleteButton: Locator
 
-    employeeRow: Locator
+    confimButton: Locator
+
+    assignButton: Locator
+
+    row: Locator
 
     constructor(page: Page){
 
@@ -48,7 +52,7 @@ export class UiHelpers {
 
         this.selectInput = page.getByText('-- Select --')
 
-        this.employeeRow = page.getByRole('row')
+        this.row = page.getByRole('row')
 
         // Dialogs
 
@@ -73,6 +77,10 @@ export class UiHelpers {
         this.saveButton = page.getByRole('button', { name: 'Save' })
 
         this.deleteButton = page.getByRole('button', { name: ' Yes, Delete' })
+
+        this.confimButton = page.getByRole('button', { name: 'Confirm' })
+
+        this.assignButton = page.getByRole('button', { name: 'Assign' })
 
     }
 
