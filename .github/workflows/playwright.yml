@@ -19,9 +19,9 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps --force
     - name: Create .env file from GitHub secrets
-      run:
-          echo "USERNAME=${{ secrets.ORANGE_USERNAME }}" >> .env
-          echo "PASSWORD=${{ secrets.ORANGE_PASSWORD }}" >> .env
+      run: |
+          echo "ORANGE_USERNAME=${{ secrets.ORANGE_USERNAME }}" >> .env
+          echo "ORANGE_PASSWORD=${{ secrets.ORANGE_PASSWORD }}" >> .env
     - name: Run Playwright tests
       run: npx playwright test
       env:

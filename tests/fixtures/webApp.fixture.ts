@@ -1,11 +1,13 @@
 import { test as base, Page } from '@playwright/test'
-import { USERNAME, PASSWORD } from '/Users/igorl/Documents/GitHub/orangehrm-e2e-tests-playwright/env'
 import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
 import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
 import { employee, leaveName} from '../testsData'
 
 export { expect } from '@playwright/test'
+
+const USERNAME = process.env.ORANGE_USERNAME ?? ''
+const PASSWORD = process.env.ORANGE_PASSWORD ?? ''
 
 type myFixtures = {
 
