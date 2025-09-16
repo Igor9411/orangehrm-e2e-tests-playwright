@@ -4,8 +4,8 @@ on:
     branches: [ "OrangeHrm-e2e-test-04.09" ]
   pull_request:
     branches: [ "OrangeHrm-e2e-test-04.09" ]
-  schedule:
-    - cron: '0 3 * * *'
+  # schedule:
+  #   - cron: '0 3 * * *'
 jobs:
   test:
     name: OrangeHrm E2E Tests
