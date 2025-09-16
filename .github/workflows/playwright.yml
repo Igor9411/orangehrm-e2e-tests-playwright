@@ -1,11 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ "OrangeHrm-e2e-test-04.09" ]
+    branches: [ OrangeHrm-e2e-test-04.09 ]
   pull_request:
-    branches: [ "OrangeHrm-e2e-test-04.09" ]
-  # schedule:
-  #   - cron: '0 3 * * *'
+    branches: [ OrangeHrm-e2e-test-04.09 ]
 jobs:
   test:
     name: OrangeHrm E2E Tests
