@@ -28,6 +28,11 @@ services:
       DB_PASSWORD: orange
     volumes:
       - orangehrm_app_data:/var/www/html
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
 volumes:
   orangehrm_app_data:

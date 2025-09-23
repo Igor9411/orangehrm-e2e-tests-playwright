@@ -26,7 +26,7 @@ jobs:
       run: docker-compose up -d
 
     - name: Wait for OrangeHRM to be ready
-      run: npx wait-on http://localhost:8080
+      run: npx wait-on --timeout 300000 http://localhost:8080
 
     - name: Create .env file from GitHub secrets
       run: |
