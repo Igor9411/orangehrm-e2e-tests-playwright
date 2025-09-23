@@ -18,15 +18,16 @@ jobs:
       run: npm ci --force
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps --force
-      
+
     - name: Start OrangeHRM with Docker Compose
-      run: docker compose up -d
+      run: docker compose -f orangehrm-docker/docker-compose.yml up -d
+
     - name: Wait for OrangeHRM to be ready
       run: npx wait-on http://localhost:8080
 
     - name: Stop Docker Compose
       if: always()
-      run: docker compose down
+      run: docker compose -f orangehrm-docker/docker-compose.yml down
 
     - name: Wait for OrangeHRM to be ready
       run: npx wait-on http://localhost:8080
