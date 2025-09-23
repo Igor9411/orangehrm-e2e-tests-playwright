@@ -21,6 +21,13 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    environment:
+      DB_HOST: db
+      DB_NAME: orangehrm
+      DB_USER: orange
+      DB_PASSWORD: orange
+      volumes:
+      - orangehrm_app_data:/var/www/html
 
 volumes:
   orangehrm_app_data:
