@@ -23,7 +23,11 @@ jobs:
       run: docker compose -f orangehrm-docker/docker-compose.yml up -d
 
     - name: Wait for OrangeHRM to be ready
-      run: npx wait-on http://localhost:8080
+      run: npx wait-on --timeout 120000 http://localhost:8080
+
+    - name: Show OrangeHRM logs (if failed)
+      if: failure()
+      run: docker compose -f orangehrm-docker/docker-compose.yml logs
 
     - name: Stop Docker Compose
       if: always()
