@@ -26,7 +26,7 @@ services:
       DB_NAME: orangehrm
       DB_USER: orange
       DB_PASSWORD: orange
-      volumes:
+    volumes:
       - orangehrm_app_data:/var/www/html
 
 volumes:
