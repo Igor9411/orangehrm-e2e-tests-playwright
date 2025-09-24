@@ -23,7 +23,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y docker-compose
 
     - name: Start OrangeHRM with Docker Compose
-      run: docker-compose up -d
+      run: docker compose -f orangehrm-docker/docker-compose.yml up -d
 
     - name: Wait for OrangeHRM to be ready
       run: npx wait-on --timeout 300000 http://localhost:8080
