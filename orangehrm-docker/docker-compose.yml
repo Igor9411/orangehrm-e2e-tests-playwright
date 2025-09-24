@@ -29,7 +29,7 @@ services:
     volumes:
       - orangehrm_app_data:/var/www/html
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 12

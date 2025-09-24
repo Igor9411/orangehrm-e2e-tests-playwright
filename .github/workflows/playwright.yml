@@ -26,7 +26,10 @@ jobs:
       run: docker compose -f orangehrm-docker/docker-compose.yml up -d
 
     - name: Wait for OrangeHRM to be ready
-      run: npx wait-on --timeout 300000 http://localhost:8080
+      run: npx wait-on --timeout 600000 http://localhost:8080
+
+    - name: Show logs for debugging
+      run: docker compose -f orangehrm-docker/docker-compose.yml logs
 
     - name: Create .env file from GitHub secrets
       run: |
