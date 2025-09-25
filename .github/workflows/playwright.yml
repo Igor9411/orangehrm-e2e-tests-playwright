@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       orangehrm:
-        image: orangehrm/orangehrm:latest
+        image: ghcr.io/igor9411/orangehrm-ready:latest
         ports:
           - 8080:80
         options: >-

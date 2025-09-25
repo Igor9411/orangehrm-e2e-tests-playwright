@@ -1,6 +1,14 @@
 
 
 services:
+  orangehrm: 
+    build:
+      context: .
+      dockerfile: Dockerfile.orangehrm
+    ports: 
+      - "8080:80"
+    depends_on:
+      - db
   db:
     image: mysql:5.7
     container_name: orangehrm_db
