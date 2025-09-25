@@ -9,28 +9,21 @@ jobs:
     name: OrangeHrm E2E Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: composer:latest
+      volumes: 
+        - my-app:/app
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+    - name: Running composer install
+      run: composer install
     - name: Install dependencies
       run: npm ci --force
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps --force
-
-    - name: Set up Docker Compose
-      run: sudo apt-get update && sudo apt-get install -y docker-compose
-
-    - name: Start OrangeHRM with Docker Compose
-      run: docker compose -f orangehrm-docker/docker-compose.yml up -d
-
-    - name: Wait for OrangeHRM to be ready
-      run: npx wait-on --timeout 600000 http://localhost:8080
-
-    - name: Show logs for debugging
-      run: docker compose -f orangehrm-docker/docker-compose.yml logs
-
     - name: Create .env file from GitHub secrets
       run: |
           echo "ORANGE_USERNAME=${{ secrets.ORANGE_USERNAME }}" >> .env
