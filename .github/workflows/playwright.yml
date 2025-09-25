@@ -15,7 +15,7 @@ jobs:
         ports:
           - 8080:80
         options: >-
-          --health-cmd="curl --fail http://localhost || exit 1"
+          --health-cmd="curl --fail http://localhost/web/index.php/dashboard/index || exit 1"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
@@ -32,6 +32,12 @@ jobs:
       run: |
           echo "ORANGE_USERNAME=${{ secrets.ORANGE_USERNAME }}" >> .env
           echo "ORANGE_PASSWORD=${{ secrets.ORANGE_PASSWORD }}" >> .env
+    - name: Wait for OrangeHRM to be ready
+      run: |
+        for i in {1..30}; do
+          curl --fail http://localhost/web/index.php/dashboard/index && break
+          sleep 5
+        done
     - name: Run Playwright tests
       run: npx playwright test
       env:
