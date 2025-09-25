@@ -9,19 +9,16 @@ jobs:
     name: OrangeHrm E2E Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    container:
-      image: composer:latest
-      volumes: 
-        - ${{ github.workspace }}:/app
     steps:
+    - name: checkout
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Check out the repo
-      uses: actions/checkout@v4
-    - name: Running composer install
-      run: composer install
+    - name: build image
+      run: docker build ./orangehrm-docker/ -t Igor9411/orangehrm/orangehrm:latest
+    - name: push image to docker hub
+      run: docker push Igor9411/orangehrm/orangehrm:latest
     - name: Install dependencies
       run: npm ci --force
     - name: Install Playwright Browsers
