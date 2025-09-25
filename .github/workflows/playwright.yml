@@ -12,12 +12,14 @@ jobs:
     container:
       image: composer:latest
       volumes: 
-        - my-app:/app
+        - ${{ github.workspace }}:/app
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+    - name: Check out the repo
+      uses: actions/checkout@v2
     - name: Running composer install
       run: composer install
     - name: Install dependencies
