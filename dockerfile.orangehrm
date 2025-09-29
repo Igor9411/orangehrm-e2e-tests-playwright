@@ -1,3 +1,4 @@
-FROM orangehrm/orangehrm:latest
-
+FROM mysql:5.7
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=orangehrm
 COPY dump.sql /docker-entrypoint-initdb.d/
