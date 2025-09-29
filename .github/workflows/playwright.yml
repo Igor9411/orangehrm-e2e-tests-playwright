@@ -10,8 +10,12 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     services:
+      db:
+        image: ghcr.io/igor9411/orangehrm-db:latest
+        ports:
+          - 3306:3306
       orangehrm:
-        image: ghcr.io/igor9411/orangehrm-ready:latest
+        image: ghcr.io/igor9411/orangehrm-app:latest
         ports:
           - 8080:80
         options: >-
