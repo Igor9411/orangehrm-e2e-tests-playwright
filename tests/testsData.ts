@@ -4,6 +4,9 @@ export const leaveName = `${faker.word.adjective().toUpperCase()} LEAVE`
 export const jobTitle = faker.person.jobTitle()
 export const payGrade = `${faker.person.jobType()} ${faker.number.int( {max: 1000} )}`
 export const latin = faker.lorem.sentence()
+export const projectName = faker.word.adjective().toUpperCase()
+export const customerName = `${faker.person.lastName()} LTD`
+export const activity = faker.company.buzzVerb()
 
 export const employee = {
         firstName: faker.person.firstName(),

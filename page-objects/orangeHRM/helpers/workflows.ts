@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test' 
 import { UiHelpers } from './uiHelpers'
 import { NavigationPanel } from '../naviPanel'
-import { employee, leaveName, jobTitle, payGrade } from '../../../tests/testsData'
+import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity} from '../../../tests/testsData'
 
 export class Workflow {
 
@@ -140,7 +140,8 @@ export class Workflow {
 
     }
 
-    async deleteJobOrPayGrade (text:string){
+    // This is for deleting job, pay grade and project function.
+    async deleteRow(text:string){
 
         await this.uiHelpers.row.filter({hasText: text}).getByRole('button').first().click()
 
@@ -148,6 +149,41 @@ export class Workflow {
 
     }
 
+    // Project Methods
+
+    async createProject(){
+
+        await this.uiHelpers.gettingInputByIndex(1).fill(`${projectName} PROJECT`)
+
+        await this.uiHelpers.addButton.first().click()
+
+        await this.uiHelpers.gettingInputByIndex(5).fill(customerName)
+
+        await this.uiHelpers.gettingInputByIndex(6).fill(`This is a description of the Customer ${customerName}.`)
+
+        await this.uiHelpers.saveButton.last().click()
+
+        await expect(this.page.getByText('×Add CustomerNameDescription')).toBeHidden()
+
+        await this.uiHelpers.gettingInputByIndex(3).fill(`This is a description of the Project ${projectName}.`)
+
+        await this.uiHelpers.gettingInputByIndex(4).fill(`${employee.firstName} ${employee.lastName}`)
+
+        await this.uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.lastName}`).click()
+
+        await this.uiHelpers.saveButton.last().click()
+
+    }
+
+    async createActivity(){
+
+        await this.uiHelpers.addButton.last().click()
+
+        await this.uiHelpers.gettingInputByIndex(5).fill(activity)
+
+        await this.uiHelpers.saveButton.last().click()
+
+    }
    
 
 }

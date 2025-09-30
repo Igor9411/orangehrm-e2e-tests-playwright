@@ -25,6 +25,8 @@ export class UiHelpers {
     succesfullyUpdatedToastMessage: Locator
 
     noRecordsToastMessage: Locator
+
+    notAllowToDeleteToastMessage: Locator
     
     addButton: Locator
 
@@ -71,6 +73,8 @@ export class UiHelpers {
         this.succesfullyUpdatedToastMessage = page.getByText('SuccessSuccessfully Updated×')
 
         this.noRecordsToastMessage = page.getByText('InfoNo Records Found')
+
+        this.notAllowToDeleteToastMessage = page.getByText('ErrorNot allowed to delete project(s) which have time logged against them×')
 
         // Buttons
 

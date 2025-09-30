@@ -13,7 +13,7 @@ test('Job Workflow', async ({ startPage, workflow, uiHelpers, navigationPanel })
 
     await expect(uiHelpers.row.filter({hasText: jobTitle})).toBeVisible()
 
-    await workflow.deleteJobOrPayGrade(jobTitle)
+    await workflow.deleteRow(jobTitle)
 
     await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
 
@@ -39,7 +39,7 @@ test('Job Validation', async ({ startPage, workflow, uiHelpers, navigationPanel 
 
     await uiHelpers.cancelButton.click()
 
-    await workflow.deleteJobOrPayGrade(jobTitle)
+    await workflow.deleteRow(jobTitle)
 
 })
 
@@ -71,7 +71,7 @@ test('Add new pay grade', async ({ startPage, uiHelpers, workflow, navigationPan
     
     await uiHelpers.cancelButton.click()
 
-    await workflow.deleteJobOrPayGrade(payGrade)
+    await workflow.deleteRow(payGrade)
 
     await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
 
