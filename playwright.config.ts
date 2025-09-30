@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+//This is for correct working of username and password in setup.
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 
 export default defineConfig({
   testDir: './tests',

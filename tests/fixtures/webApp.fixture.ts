@@ -3,7 +3,6 @@ import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
 import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
 import { employee, leaveName} from '../testsData'
-
 export { expect } from '@playwright/test'
 
 const USERNAME = process.env.ORANGE_USERNAME ?? ''
@@ -54,7 +53,7 @@ export const test = base.extend<myFixtures>({
 
         },
     
-    startPage: async ({ page }, use: (fixture: Page) => Promise<void>) => {
+    startPage: async ({ page }, use: (fixture: Page) => Promise<void>) => { // This can probably be deleted, se uihelpers fixture.
 
             await page.goto('')
     
@@ -76,6 +75,5 @@ export const test = base.extend<myFixtures>({
 
             await workflow.deleteEmployee(employee.firstName)
         
-
         }
 })

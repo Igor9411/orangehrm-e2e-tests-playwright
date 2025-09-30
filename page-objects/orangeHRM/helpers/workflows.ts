@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test' 
 import { UiHelpers } from './uiHelpers'
 import { NavigationPanel } from '../naviPanel'
-import { employee, leaveName } from '../../../tests/testsData'
+import { employee, leaveName, jobTitle, payGrade } from '../../../tests/testsData'
 
 export class Workflow {
 
@@ -111,5 +111,43 @@ export class Workflow {
 
         await this.uiHelpers.confimButton.click()
     }
+
+    // Job&PayGrade Methods
+
+    async createJob (){
+
+        await this.uiHelpers.addButton.click()
+
+        await this.uiHelpers.gettingInputByIndex(1).fill(jobTitle)
+
+        await this.uiHelpers.gettingInputByIndex(2).fill(`This is a description of a ${jobTitle}.`)
+
+        await this.page.locator('input[type=file]').setInputFiles('documents/job-add-example.pdf')
+
+        await this.uiHelpers.gettingInputByIndex(3).fill(`This is a note of a ${jobTitle} and it is a little bit longer than a description and much longer then the title.`)
+
+        await this.uiHelpers.saveButton.click()
+
+    }
+
+    async createPayGrade(){
+
+        await this.uiHelpers.addButton.click()
+
+        await this.uiHelpers.gettingInputByIndex(1).fill(payGrade)
+
+        await this.uiHelpers.saveButton.click()
+
+    }
+
+    async deleteJobOrPayGrade (text:string){
+
+        await this.uiHelpers.row.filter({hasText: text}).getByRole('button').first().click()
+
+        await this.uiHelpers.deleteButton.click()
+
+    }
+
+   
 
 }

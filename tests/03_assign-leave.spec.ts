@@ -1,7 +1,7 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
 import { employee, leaveName} from '../tests/testsData.ts'
 
-test('New type of leave can be created', async ({ startPage, navigationPanel, uiHelpers, workflow}) => {
+test('New type of leave can be created', async ({ startPage, uiHelpers, workflow}) => {
 
     await workflow.createLeave(leaveName)
 

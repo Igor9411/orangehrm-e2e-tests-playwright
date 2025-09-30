@@ -36,6 +36,8 @@ export class UiHelpers {
 
     assignButton: Locator
 
+    cancelButton: Locator
+
     row: Locator
 
     constructor(page: Page){
@@ -81,6 +83,8 @@ export class UiHelpers {
         this.confimButton = page.getByRole('button', { name: 'Confirm' })
 
         this.assignButton = page.getByRole('button', { name: 'Assign' })
+
+        this.cancelButton = page.getByRole('button', { name: 'Cancel' })
 
     }
 
