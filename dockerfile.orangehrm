@@ -1,2 +1,0 @@
-FROM orangehrm/orangehrm:latest
-COPY Conf.php /var/www/html/lib/confs/Conf.php

@@ -1,25 +1,21 @@
-
-
 services:
- db:
-  build:
-    context: .
-    dockerfile: dockerfile.db
-  container_name: orangehrm_db
-  restart: always
-  environment:
+  db:
+    image: mysql:5.7
+    container_name: orangehrm_db
+    restart: always
+    environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: orangehrm
       MYSQL_USER: orange
       MYSQL_PASSWORD: orange
-  volumes:
+    ports:
+      - "3306:3306"
+    volumes:
       - db_data:/var/lib/mysql
 
-orangehrm:
-    build:
-      context: .
-      dockerfile: dockerfile.orangehrm  
-    container_name: orangehrm_app
+  orangehrm:
+    image: orangehrm/orangehrm
+    container_name: orangehrm_web
     restart: always
     ports:
       - "8080:80"
@@ -30,8 +26,6 @@ orangehrm:
       DB_NAME: orangehrm
       DB_USER: orange
       DB_PASSWORD: orange
-    volumes:
-      - orangehrm_app_data:/var/www/html
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/ || exit 1"]
       interval: 10s
@@ -39,5 +33,4 @@ orangehrm:
       retries: 12
 
 volumes:
-  orangehrm_app_data:
   db_data:
