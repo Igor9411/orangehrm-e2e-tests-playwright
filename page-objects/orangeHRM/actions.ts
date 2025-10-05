@@ -1,3 +1,6 @@
+// IMPORTANT //
+// This folder was used only for learning purpose and it contains false/not up-to-date or useless data //
+
 import {Page, Locator, expect} from '@playwright/test'
 
 export class EmployeeDetails {
