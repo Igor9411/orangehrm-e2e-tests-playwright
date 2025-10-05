@@ -17,7 +17,6 @@ In vs code extension panel install *playwright test for vs code*
 **If you have restricted execution policy (playwright command can't be executed) then in powershell with admin rights run _ _Set-ExecutionPolicy Unrestricted_ _ . When you finish working the you can set back the restructions by runnig _ _Set-ExecutionPolicy Restricted_ _**
 6. Install faker and npm
     - terminal > npm install @faker-js/faker --save-dev
-    - 
     - npm install -g npm@xx.x.x (latest version has to be checked) npm --version 
 
 8. Install Docker Desktop (https://www.docker.com/products/docker-desktop/) + download OrangeHrm.zip file (https://github.com/orangehrm/orangehrm > Getting started section >  latest version link)
