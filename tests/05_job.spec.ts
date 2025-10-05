@@ -1,93 +1,85 @@
-import { Page, Locator, expect, test } from '@playwright/test'
-import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
-import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts'
-import { faker } from '@faker-js/faker'
+import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
+import { jobTitle, payGrade, employee } from './testsData.ts'
 
-let gettingUiElements: UiHelpers 
+test('Job Workflow', async ({ startPage, workflow, uiHelpers, navigationPanel }) => { 
 
-let navRedirection: NavigationPanel
+    await navigationPanel.getAnyNavPanelItem('Admin').click()
 
+    await uiHelpers.gettingTopBarMenuItem('Job', 'Job Titles')
 
-test.describe('Job creation/deletion and validation', () => {
+    await workflow.createJob()
 
-    const jobTitle = faker.person.jobTitle()
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-test.beforeEach(async ({ page }) => {
+    await expect(uiHelpers.row.filter({hasText: jobTitle})).toBeVisible()
 
-    gettingUiElements = new UiHelpers (page)
+    await workflow.deleteRow(jobTitle)
+
+    await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
+
+    await startPage.getByRole('row', { name: ' Job Titles  Job' }).waitFor({ state: 'visible' })
+
+    await expect(uiHelpers.row.filter({hasText: jobTitle})).not.toBeVisible()
+
+})
+
+test('Job Validation', async ({ startPage, workflow, uiHelpers, navigationPanel }) => { 
+
+    await navigationPanel.getAnyNavPanelItem('Admin').click()
+
+    await uiHelpers.gettingTopBarMenuItem('Job', 'Job Titles')
+
+    await workflow.createJob()
+
+    await workflow.createJob()
+
+    await expect(startPage.getByText('Already exists')).toBeVisible()
+
+    await expect(startPage).toHaveURL(/saveJobTitle/)
+
+    await uiHelpers.cancelButton.click()
+
+    await workflow.deleteRow(jobTitle)
+
+})
+
+test('Add new pay grade', async ({ startPage, uiHelpers, workflow, navigationPanel }) => {
+
+    await navigationPanel.getAnyNavPanelItem('Admin').click()
+
+    await uiHelpers.gettingTopBarMenuItem('Job', 'Pay Grades')
+
+    await workflow.createPayGrade()
+
+    await uiHelpers.addButton.click()
+
+    await expect(startPage.getByText('Add CurrencyCurrency-- Select')).toBeVisible()
+
+    await uiHelpers.selectInput.click()
+
+    await startPage.getByRole('option', { name: 'PLN - Polish Zloty' }).click()
+
+    await uiHelpers.gettingInputByIndex(2).fill(String(employee.minSalary))
+
+    await uiHelpers.gettingInputByIndex(3).fill(String(employee.maxSalary))
+
+    await uiHelpers.saveButton.last().click()
+
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
+
+    await expect(startPage.getByRole('cell', { name: 'Polish Zloty' })).toBeVisible()
     
-    navRedirection = new NavigationPanel (page)
+    await uiHelpers.cancelButton.click()
 
-    await page.goto('')
+    await workflow.deleteRow(payGrade)
 
-    await navRedirection.getAnyNavPanelItem('Admin').click()
+    await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
 
-    await gettingUiElements.gettingAnyTopBarItem('Job').click()
+    await startPage.getByRole('row', { name: ' Name Currency Actions' }).waitFor({ state: 'visible' })
 
-    await gettingUiElements.gettingAnyTopBarMenuItem('Job Titles').click()
-
-    await gettingUiElements.addButton.click()
-
-})
-
-test('Adding a job', async ({ page })=>{
-
-    await expect(page.getByRole('heading').last()).toHaveText('Add Job Title')
-
-    await gettingUiElements.gettingInputByIndex(1).fill(jobTitle)
-
-    await gettingUiElements.gettingInputByIndex(2).fill(`This is a description of a ${jobTitle}.`)
-
-    await page.locator('input[type=file]').setInputFiles('documents/job-add-example.pdf')
-
-    await gettingUiElements.gettingInputByIndex(3).fill(`This is a note of a ${jobTitle} and it is a little bit longer than a description and much longer then the title.`)
-
-    await gettingUiElements.saveButton.click()
-
-    await expect(gettingUiElements.successfullySavedToastMessage).toBeVisible()
-
-    await expect(page.getByRole('row', { name: ` ${jobTitle}` })).toBeVisible()
-
-    console.log(jobTitle)
-
-})
-
-test('Validation for duplicate job title', async ({ page }) => {
-
-    await gettingUiElements.gettingInputByIndex(1).fill(jobTitle)
-
-    await gettingUiElements.saveButton.click()
-
-    await expect(gettingUiElements.successfullySavedToastMessage).not.toBeVisible()
-
-    await expect(page.getByText('Already exists')).toBeVisible()
-
-    await expect(page).toHaveURL('http://localhost:8080/web/index.php/admin/saveJobTitle')
-
-    console.log(jobTitle)
-
-})
-
-test('Deletion of a job', async ({ page }) => {
-
-    const jobTitleRow = page.getByRole('row', { name: ` ${jobTitle}` })
-
-    await page.goBack()
-
-    await expect(page).toHaveURL('http://localhost:8080/web/index.php/admin/viewJobTitleList')
-
-    await jobTitleRow.getByRole('button').first().click()
-
-    await expect(gettingUiElements.confirmationDialog).toBeVisible()
-
-    await gettingUiElements.dialogDeleteButton.click()
-
-    await expect(gettingUiElements.deleteConfirmationToastMessage).toBeVisible()
-
-    await expect(jobTitleRow).not.toBeVisible()
+    await expect(uiHelpers.row.filter({hasText: payGrade})).not.toBeVisible()
 
 })
 
 
 
-})

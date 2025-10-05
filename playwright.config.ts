@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+//This is for correct working of username and password in setup.
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 
 export default defineConfig({
   testDir: './tests',
@@ -9,7 +13,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: 1,
+  workers: process.env.CI ? 4 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

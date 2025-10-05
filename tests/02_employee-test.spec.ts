@@ -1,159 +1,112 @@
-import { test, expect, } from '@playwright/test';
-import { EmployeeDetails } from '../page-objects/orangeHRM/actions.ts'
-import { faker } from '@faker-js/faker'
-import { NavigationPanel } from '../page-objects/orangeHRM/naviPanel.ts';
-import { UiHelpers } from '../page-objects/orangeHRM/helpers/uiHelpers.ts'
-import fs from 'fs'
+import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
+import { employee, latin } from './testsData.ts'
 
-const user = {
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        Id: faker.number.int( {max: 1000} )
-    }
+const formattedDate = employee.birthDate.toISOString().slice(0,10)
 
-let employeeCreation: EmployeeDetails
+test('Create new employee', async ({ startPage, workflow, uiHelpers }) => {
 
-let pimRedirection: NavigationPanel
+    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
 
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-test.beforeEach('Log in to Orange', async ({ page }) => {
+    await expect(startPage.getByRole('heading').filter({ hasText: `${employee.firstName} ${employee.lastName}`})).toBeVisible() 
 
-    employeeCreation = new EmployeeDetails(page)
-
-    pimRedirection = new NavigationPanel(page)
-    
-    await page.goto('')
-
+    await workflow.deleteEmployee(employee.firstName)
 })
 
-test('New employee creation', async ({ page }) => {
+test('Adding employee personal data', async ({ workflow, uiHelpers, startPage }) => {
 
-    await pimRedirection.getAnyNavPanelItem('PIM').click()
+    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
 
-    await employeeCreation.creatingNewEmployee(user.firstName, user.lastName, user.Id)
+    await uiHelpers.gettingInputByIndex(2).fill(employee.middleName)
 
-    await employeeCreation.employeeVerification(user.firstName, user.lastName, user.Id)
+    await uiHelpers.gettingInputByIndex(4).fill(employee.nickname)
 
-    await expect(page.getByRole('heading').filter({ hasText: `${user.firstName} ${user.lastName}`})).toBeVisible()
+    await uiHelpers.gettingInputByIndex(6).fill(String(employee.otherId))
 
-    fs.mkdirSync('tmp', {recursive: true}) // fs.mkdirSync (synchronus mkdir) creates folder of name 'tmp', recursive: true checkes if folder exists and addes all other nessesities
-    fs.writeFileSync('tmp/user.json', JSON.stringify(user, null, 2)) // fs.wrifeFileSync (synchronus write) saves data in the file, user changes JSON into readable text, null means no replacer so nothing is ommitted, 2 means format of the file
-    
-})
+    await uiHelpers.gettingInputByIndex(7).fill(employee.driverLicense)
 
-test('Adding user personal data', async ({ page }) =>{
+    await uiHelpers.gettingInputByIndex(8).fill('2027-12-24')
 
-    await employeeCreation.gettingFirstUser()
+    await uiHelpers.selectInput.first().click()
 
-    const middleName = faker.person.firstName()
+    await uiHelpers.gettingAnyDropdownItem('Polish').click()
 
-    const otherId = faker.number.int({min: 1000, max: 9999 })
+    await uiHelpers.selectInput.last().click()
 
-    const driverL = faker.string.alphanumeric({length: {min: 8, max: 11}})
+    await uiHelpers.gettingAnyDropdownItem('Single').click()
 
-    await employeeCreation.gettingInputByIndex(2).fill(middleName)
+    await uiHelpers.gettingInputByIndex(9).fill(formattedDate)
 
-    console.log(middleName)
+    await startPage.getByText('Male', { exact: true }).click()
 
-    await employeeCreation.gettingInputByIndex(5).fill(String(otherId))
+    await uiHelpers.gettingInputByIndex(10).fill(employee.military)
 
-    console.log(otherId)
+    await startPage.getByText('Yes').click()
 
-    await employeeCreation.gettingInputByIndex(6).fill(driverL)
+    await uiHelpers.addButton.click()
 
-    console.log(driverL)
+    await startPage.locator('input[type=file]').setInputFiles('pictures/my_pic.jpg')
 
-    await employeeCreation.calendarAddingDate()
+    await uiHelpers.gettingInputByIndex(11).fill(latin)
 
-    await employeeCreation.addingAndorranNationality()
-    
-    await employeeCreation.settingOtherMatrialStatus()
+    await uiHelpers.saveButton.last().click()
 
-    await employeeCreation.gettingInputByIndex(8).fill('1987-12-12')
+    await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-    await employeeCreation.settingMaleGender()
-    
-    await employeeCreation.settingBloodType()
-
-    await employeeCreation.gettingInputByIndex(9).fill('This is just a test.')
-
-    await employeeCreation.addButton.click()
-
-    await page.locator('input[type=file]').setInputFiles('pictures/my_pic.jpg')
-
-    await page.getByRole('button', { name: 'Save' }).nth(2).click() // This has to has a selector in class
-    
-    await expect(employeeCreation.successToastMessage).toBeVisible()
-
-    console.log('Adding user personal data test has passed :)')
-    
-})
-
-test.skip('Successfull edit of the user data', async({page}) =>{
-
-    await employeeCreation.gettingFirstUser()
-
-    await employeeCreation.gettingInputByIndex(1).fill('')
-
-    await employeeCreation.gettingInputByIndex(1).fill('Teddy')
-
-    await employeeCreation.gettingInputByIndex(3).fill('Junior')
-
-    await expect(employeeCreation.gettingInputByIndex(1)).toHaveValue('Teddy')
-
-    await expect(employeeCreation.gettingInputByIndex(3)).toHaveValue('Junior')
-
-    await employeeCreation.noValidMessage()
-
-    await employeeCreation.saveAdditionalButton.click()
-
-    await expect(employeeCreation.successUpdatedToast).toBeVisible()
-
-    await page.reload()
-
-    await expect(page.getByRole('heading').nth(1)).toHaveText('Teddy Junior')
+    await workflow.deleteEmployee(employee.firstName)
 
 })
 
 
-test.skip('Unsuccessfull edit of the user data', async({page}) =>{
+test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPage}) =>{
 
-    const employeeCreation = new EmployeeDetails(page)
+    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
 
-    await employeeCreation.gettingFirstUser()
+    await navigationPanel.getAnyNavPanelItem('PIM').click()
 
-    await employeeCreation.noValidMessage()
+    await expect(uiHelpers.row.filter({hasText: employee.firstName})).toBeVisible()
 
-    await employeeCreation.gettingInputByIndex(1).fill('')
+    await uiHelpers.row.filter({hasText: employee.firstName}).click()
 
-    await employeeCreation.gettingInputByIndex(3).fill('')
+    await workflow.editEmployee(employee.newFirstName, employee.newLastName, employee.newId)
 
-    await employeeCreation.saveAdditionalButton.click()
-    
-    await employeeCreation.validMessage()
+    await expect(uiHelpers.succesfullyUpdatedToastMessage).toBeVisible()
 
-    await expect(employeeCreation.successToastMessage).not.toBeVisible()
+    await startPage.getByRole('link', { name: 'Employee List' }).click()
+
+    await expect(uiHelpers.row.filter({hasText: employee.firstName})).not.toBeVisible()
+
+    await workflow.deleteEmployee(employee.newFirstName)
+})
+
+test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHelpers }) => {
+
+    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+
+    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+
+    await expect(startPage.getByText('Employee Id already exists')).toBeVisible()
+
+    await expect(uiHelpers.succesfullyUpdatedToastMessage).not.toBeVisible()
+
+    await expect(startPage).toHaveURL(/addEmployee/)
+
+    await workflow.deleteEmployee(employee.firstName)
 
 })
 
-test('Deleting a user', async ({ page }) =>{
+test('Delete employee', async ({ startPage, workflow, uiHelpers }) =>{
 
-    const user = JSON.parse(fs.readFileSync('tmp/user.json', 'utf-8')); // This 'takes' user data from the tmp file and allows to use that data later in the test (line 155)
+    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
 
-    const employeeCreation = new EmployeeDetails(page)
+    await workflow.deleteEmployee(employee.firstName)
 
-    await employeeCreation.gettingInputByIndex(2).fill(String(user.Id))
+    await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
 
-    await page.getByRole('button', { name: 'Search' }).click()
+    await startPage.getByRole('row', { name: ' Id  First (& Middle) Name' }).waitFor({ state: 'visible' })
 
-    await page.getByRole('button', { name: '' }).last().click()
+    await expect(uiHelpers.row.filter({hasText: employee.firstName})).not.toBeVisible()
 
-    await expect(page.getByText('×Are you Sure?The selected')).toBeVisible()
-
-    await page.getByRole('button', { name: ' Yes, Delete' }).click()
-
-    await expect(page.getByText('SuccessSuccessfully Deleted×')).toBeVisible()
-
-    console.log("Last user has been clicked.")
 })
 

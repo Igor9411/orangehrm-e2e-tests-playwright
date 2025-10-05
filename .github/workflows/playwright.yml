@@ -1,16 +1,28 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [ OrangeHrm-e2e-tests-04.09 ]
   pull_request:
-    branches: [ main, master ]
-  schedule:
-    - cron: '0 3 * * *'
+    branches: [ OrangeHrm-e2e-tests-04.09 ]
 jobs:
   test:
     name: OrangeHrm E2E Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: ghcr.io/igor9411/orangehrm-db:latest
+        ports:
+          - 3306:3306
+      orangehrm:
+        image: ghcr.io/igor9411/orangehrm-app:latest
+        ports:
+          - 8080:80
+        options: >-
+          --health-cmd="curl --fail http://localhost || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -20,8 +32,21 @@ jobs:
       run: npm ci --force
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps --force
+    - name: Create .env file from GitHub secrets
+      run: |
+          echo "ORANGE_USERNAME=${{ secrets.ORANGE_USERNAME }}" >> .env
+          echo "ORANGE_PASSWORD=${{ secrets.ORANGE_PASSWORD }}" >> .env
+    - name: Wait for OrangeHRM to be ready
+      run: |
+        for i in {1..30}; do
+          curl --fail http://localhost && break
+          sleep 5
+        done
     - name: Run Playwright tests
       run: npx playwright test
+      env:
+        ORANGE_USERNAME: ${{ secrets.ORANGE_USERNAME }}
+        ORANGE_PASSWORD: ${{ secrets.ORANGE_PASSWORD }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

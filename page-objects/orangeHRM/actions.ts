@@ -33,8 +33,7 @@ export class EmployeeDetails {
     addButton: Locator
     yearDropdown: Locator
     yearDrpodownItem: Locator
-    validationFirst: Locator
-    validationSecond: Locator 
+    
     saveAdditionalButton: Locator
     validSele: Locator[]
     firstUser: Locator
