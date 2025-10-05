@@ -1,7 +1,11 @@
 # orangehrm-e2e-tests-playwright
 This is a project of e2e tests of the open source app OrangeHrm (https://github.com/orangehrm/orangehrm). The purpose of it is to show how the e2e tests work using Playwright + Typescript and for learning purpose. The project is not yet finished.
 
-Installation guide:
+## CI/CD Pipeline
+A CI/CD pipeline is planned for this project to automate running the tests.  
+Currently, the pipeline is not set up yet, but this is something I am actively working on and will add in the near future.
+
+## Installation guide (locally):
 1. Download and install Vs Code > https://code.visualstudio.com/docs/setup/windows
 2. Download and install Git > https://git-scm.com/downloads
 3. Download and install Node.js > https://nodejs.org/en
