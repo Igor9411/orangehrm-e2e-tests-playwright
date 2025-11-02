@@ -3,6 +3,7 @@ import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
 import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
 import { employee, leaveName} from '../testsData'
+import { RequestHandler } from '../../page-objects/orangeHRM/helpers/request-handler'
 export { expect } from '@playwright/test'
 
 const USERNAME = process.env.ORANGE_USERNAME ?? ''
@@ -16,6 +17,7 @@ type myFixtures = {
     uiHelpers: UiHelpers
     navigationPanel: NavigationPanel
     workflow: Workflow
+    api: RequestHandler
 }
 
 
@@ -75,5 +77,15 @@ export const test = base.extend<myFixtures>({
 
             await workflow.deleteEmployee(employee.firstName)
         
+        },
+    
+    api: async({page}, use) => {
+
+            const orangeHrmURL = 'http://localhost:8080/web/index.php'
+
+            const reuqestHandler = new RequestHandler(page.request, orangeHrmURL)
+
+            await use(reuqestHandler)
+
         }
 })
