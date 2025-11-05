@@ -5,6 +5,7 @@ import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
 import { employee, leaveName} from '../testsData'
 import { RequestHandler } from '../../page-objects/orangeHRM/helpers/request-handler'
 export { expect } from '@playwright/test'
+import { EmployeeApi } from '../../page-objects/orangeHRM/helpers/employeeAPI'
 
 const USERNAME = process.env.ORANGE_USERNAME ?? ''
 const PASSWORD = process.env.ORANGE_PASSWORD ?? ''

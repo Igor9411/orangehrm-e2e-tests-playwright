@@ -1,4 +1,4 @@
-import { APIRequestContext, expect } from "@playwright/test"
+import { APIRequestContext, expect } from '@playwright/test'
 
 
 export class RequestHandler {
@@ -95,9 +95,9 @@ export class RequestHandler {
             headers: this.apiHeaders,
             data: this.apiBody
         })
-        console.log(response + "PUT")
+       
         const responseJSON = await response.json()
-        console.log(responseJSON + "PUTJSON")
+    
         expect(response.status()).toEqual(statusCode)
 
         return responseJSON

@@ -1,6 +1,11 @@
-import { de } from '@faker-js/faker'
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
 import { employee } from './testsData.ts'
+import { EmployeeApi } from '../page-objects/orangeHRM/helpers/employeeAPI.ts'
+import { Page, request} from '@playwright/test'
+import { APIConfig } from '../page-objects/orangeHRM/helpers/employeeAPI.ts'
+import { defaultConfig } from '../page-objects/orangeHRM/helpers/employeeAPI.ts'
+
+
 
 test('Check API with UI', async ({api, uiHelpers}) =>{
 
@@ -12,10 +17,12 @@ test('Check API with UI', async ({api, uiHelpers}) =>{
     console.log(response)
 
     expect(response.data.length).toBeLessThanOrEqual(25)
+
+    console.log('GET REQUEST IS DONE, NO IS TIME FOR TEST1')
   
 })
 
-test('Create and Delete Employee', async ({ api }) =>{
+test('Create, update and Delete Employee', async ({ api }) =>{
 
     const postReqeust = await api
         .path('/api/v2/pim/employees')
@@ -31,14 +38,16 @@ test('Create and Delete Employee', async ({ api }) =>{
 
     console.log(`The identification number of a new user is ${empNum}.`)
 
+    console.log(`Employe new name is ${employee.newFirstName}, and new last name is ${employee.newLastName}.`)
+
     const putRequest = await api
         .path(`/api/v2/pim/employees/${empNum}/personal-details`)
         .headers({'Content-Type': 'application/json'})
-        .body({"lastName":"AdamSZ","firstName":"Sraczenss","middleName":"","employeeId":"4889","otherId":"","drivingLicenseNo":"","drivingLicenseExpiredDate":null,"gender":null,"birthday":null,"nickname":"","smoker":false,"militaryService":null})
+        .body({"lastName":employee.newLastName,"firstName":employee.newFirstName,"middleName":"","employeeId":String(employee.newId),"otherId":String(employee.otherId),"drivingLicenseNo":employee.driverLicense,"drivingLicenseExpiredDate":null,"gender":null,"birthday":null,"nickname":employee.nickname,"smoker":false,"militaryService":employee.military})
         .putRequest(200)
-        console.log(putRequest.path)
-        
-    console.log(`This is the putRequest outcome = ${putRequest}`)
+
+    expect(putRequest.data.lastName).toEqual(employee.newLastName)
+   
     
     const deleteResponse = await api
         .path('/api/v2/pim/employees')
@@ -46,7 +55,7 @@ test('Create and Delete Employee', async ({ api }) =>{
         .body({"ids":[empNum]})
         .deleteRequest(200)
     
-    console.log(`This data = ${deleteResponse} is from the delete response`)
+    console.log(deleteResponse)
 
      const getResponse = await api
         .path('/api/v2/pim/employees')
@@ -54,46 +63,48 @@ test('Create and Delete Employee', async ({ api }) =>{
         .getRequest(200)
         
 
-    expect(getResponse.data[0].empNumber).not.toEqual(empNum)
+    expect(getResponse.data.empNumber).not.toEqual(empNum)
     console.log(getResponse)
-
-    
-    
         
+})
+
+////////////////////////////////////////////////////////////////
+
+
+test('Check get', async ({ request}) =>{
+
+    const quickConfig: APIConfig = {
+        url: defaultConfig.orangeUrl,
+        apiPath: defaultConfig.orangePath,
+        apiHeders: defaultConfig.orangeHeders,
+        request
+    }
+
+    const api = new EmployeeApi(quickConfig)
+
+    const getRequest = await api.getEmployees()
+
+    console.log(getRequest)
 
 })
 
-test('api check', async ({request}) =>{
+test('Check post', async ({ request}) =>{
 
-    const getUrl = await request.get('http://localhost:8080/web/index.php/api/v2/pim/employees')
-    const getResponse = await getUrl.json()
+    const quickConfig: APIConfig = {
+        url: defaultConfig.orangeUrl,
+        apiPath: defaultConfig.orangePath,
+        apiHeders: defaultConfig.orangeHeders,
+        body: defaultConfig.postBody,
+        request
+    }
 
-    console.log(getResponse)
-    expect(getUrl.status()).toEqual(200)
+    const api = new EmployeeApi(quickConfig)
 
-    const postUrl = await request.post('http://localhost:8080/web/index.php/api/v2/pim/employees', {
-        data: { "firstName":"Albert","middleName":"Jimmy","lastName":"Coacha","empPicture":null,"employeeId":"0199"}
-    })
-    const postResponse = await postUrl.json()
+    const postRequest = await api.postEmployee(200)
 
-    console.log(postResponse)
-    expect(postResponse.data.firstName).toEqual('Albert')
-   
-
+    console.log(postRequest)
 
 })
 
-test('put requests', async ({ request }) => {
-
-    const numm = 88
-
-    const putUrl = await request.put(`http://localhost:8080/web/index.php/api/v2/pim/employees/${numm}/personal-details`, {
-        data:{"lastName":"Adam","firstName":"Sraczenz","middleName":"","employeeId":"4889","otherId":"","drivingLicenseNo":"","drivingLicenseExpiredDate":null,"gender":null,"birthday":null,"nickname":"","smoker":false,"militaryService":null}
-    })
-
-    const putRequest = await putUrl.json()
-    console.log(putRequest)
-    expect(putUrl.status()).toEqual(200)
 
 
-})
