@@ -74,7 +74,7 @@ test('Create, update and Delete Employee', async ({ api }) =>{
 test('Check get', async ({ request}) =>{
 
     const quickConfig: APIConfig = {
-        url: defaultConfig.orangeUrl,
+        apiUrl: defaultConfig.orangeUrl,
         apiPath: defaultConfig.orangePath,
         apiHeders: defaultConfig.orangeHeders,
         request
@@ -88,13 +88,13 @@ test('Check get', async ({ request}) =>{
 
 })
 
-test('Check post', async ({ request}) =>{
+test('Check post', async ({ request }) =>{
 
     const quickConfig: APIConfig = {
-        url: defaultConfig.orangeUrl,
+        apiUrl: defaultConfig.orangeUrl,
         apiPath: defaultConfig.orangePath,
         apiHeders: defaultConfig.orangeHeders,
-        body: defaultConfig.postBody,
+        apiBody: defaultConfig.postBody,
         request
     }
 

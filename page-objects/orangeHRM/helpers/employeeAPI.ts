@@ -20,36 +20,36 @@ export const defaultConfig = {
 
 export interface APIConfig {
 
-    url: string
+    apiUrl: string
     apiPath: string
     apiHeders: Record <string, string>
-    body?:object
+    apiBody?:object
     request: APIRequestContext
     
 }
 
 export class EmployeeApi {
 
-    baseUrl: string = ''
+    url: string = ''
     path: string = ''
     headers: Record<string, string> = {}
-    apiBody?: object = {}
-    apiRequest: APIRequestContext
+    body?: object = {}
+    request: APIRequestContext
     
 
-    constructor (config: APIConfig){
+    constructor (Apiconfig: APIConfig){
 
-        this.baseUrl = 'http://localhost:8080/web/index.php'
-        this.path = config.apiPath
-        this.headers = config.apiHeders
-        this.apiRequest = config.request
-        this.apiBody = config.body
-
+        this.url = Apiconfig.apiUrl
+        this.path = Apiconfig.apiPath
+        this.headers = Apiconfig.apiHeders
+        this.body = Apiconfig.apiBody
+        this.request = Apiconfig.request
+        
     }
 
     private getURL(){
 
-        const url = new URL(`${this.baseUrl}${this.path}`)
+        const url = new URL(`${this.url}${this.path}`)
 
         return url.toString()
     }
@@ -58,7 +58,7 @@ export class EmployeeApi {
 
         const fullURL = this.getURL()
 
-        const response = await this.apiRequest.get(fullURL)
+        const response = await this.request.get(fullURL)
 
         const responseJson = await response.json()
 
@@ -70,9 +70,9 @@ export class EmployeeApi {
 
         const fullURL = this.getURL()
 
-        const response = await this.apiRequest.post(fullURL,{
+        const response = await this.request.post(fullURL,{
             headers: this.headers,
-            data: this.apiBody
+            data: this.body
         })
 
         const responseJson = await response.json()
