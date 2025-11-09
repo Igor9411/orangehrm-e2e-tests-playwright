@@ -6,6 +6,7 @@ import { employee, leaveName} from '../testsData'
 import { RequestHandler } from '../../page-objects/orangeHRM/helpers/request-handler'
 export { expect } from '@playwright/test'
 import { EmployeeApi } from '../../page-objects/orangeHRM/helpers/employeeAPI'
+import { defaultConfig } from '../../api-test.config'
 
 const USERNAME = process.env.ORANGE_USERNAME ?? ''
 const PASSWORD = process.env.ORANGE_PASSWORD ?? ''
@@ -18,75 +19,97 @@ type myFixtures = {
     uiHelpers: UiHelpers
     navigationPanel: NavigationPanel
     workflow: Workflow
-    api: RequestHandler
+    artemApi: RequestHandler
+    api: EmployeeApi
+    employeeApi: EmployeeApi
 }
 
 
 export const test = base.extend<myFixtures>({
     
-    uiHelpers: async ({ page }, use: (fixture: UiHelpers) => Promise<void>) => {
+    uiHelpers: async ({page}, use: (fixture: UiHelpers) => Promise<void>) => {
 
-            await use( new UiHelpers ( page ))
+        await use(new UiHelpers(page))
 
-        },
+    },
 
-    navigationPanel: async ({ page }, use: (fixture: NavigationPanel) => Promise<void>) => {
+    navigationPanel: async ({page}, use: (fixture: NavigationPanel) => Promise<void>) => {
 
-            await use( new NavigationPanel ( page ))
+        await use(new NavigationPanel(page))
 
-        }, 
+    }, 
 
-    workflow: async ({ page}, use: (fixture: Workflow) => Promise<void>) => {
+    workflow: async ({page}, use: (fixture: Workflow) => Promise<void>) => {
 
-            await use( new Workflow (page))
+        await use(new Workflow(page))
         
-        },
+    },
 
     webApp: async ({ page, uiHelpers }, use:(fixture: any) => Promise<void>) => {
 
-            await page.goto('')
+        await page.goto('')
     
-            await uiHelpers.gettingInputByIndex(0).fill(USERNAME)
+        await uiHelpers.gettingInputByIndex(0).fill(USERNAME)
     
-            await uiHelpers.gettingInputByIndex(1).fill(PASSWORD)
+        await uiHelpers.gettingInputByIndex(1).fill(PASSWORD)
     
-            await page.getByRole('button', { name: 'Login' }).click()
+        await page.getByRole('button', { name: 'Login' }).click()
     
-            await use(page)
+        await use(page)
 
-        },
+    },
     
-    startPage: async ({ page }, use: (fixture: Page) => Promise<void>) => { // This can probably be deleted, se uihelpers fixture.
+    startPage: async ({page}, use: (fixture: Page) => Promise<void>) => { // This can probably be deleted, se uihelpers fixture.
 
-            await page.goto('')
+        await page.goto('')
     
-            await use(page)
+        await use(page)
 
-        },
+    },
 
-    leavePage: async ({ page, workflow }, use: (fixture: Page) => Promise<void>) => {
+    leavePage: async ({page, workflow}, use: (fixture: Page) => Promise<void>) => {
 
-            await page.goto('')
+        await page.goto('')
 
-            await workflow.createLeave(leaveName)
+        await workflow.createLeave(leaveName)
 
-            await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+        await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
     
-            await use(page)
+        await use(page)
 
-            await workflow.deleteLeave(leaveName)
+        await workflow.deleteLeave(leaveName)
 
-            await workflow.deleteEmployee(employee.firstName)
+        await workflow.deleteEmployee(employee.firstName)
         
-        },
+    },
     
-    api: async({page}, use) => {
+    artemApi: async({page}, use) => {
 
-            const orangeHrmURL = 'http://localhost:8080/web/index.php'
+        const orangeHrmURL = 'http://localhost:8080/web/index.php'
 
-            const reuqestHandler = new RequestHandler(page.request, orangeHrmURL)
+        const reuqestHandler = new RequestHandler(page.request, orangeHrmURL)
 
-            await use(reuqestHandler)
+        await use(reuqestHandler)
 
-        }
+    },
+    
+    api: async ({request}, use) => {
+
+        await use(new EmployeeApi(request))
+
+    },
+
+    employeeApi: async ({api}, use) => {
+
+        await api.postEmployee(200)
+
+        await api.getEmployees()
+
+        await use(api)
+
+        await api.deleteEmployee(200, employee.Id)
+
+        await api.getEmployees()
+
+    }
 })

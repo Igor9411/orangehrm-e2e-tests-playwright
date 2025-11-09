@@ -1,78 +1,74 @@
-import { APIRequestContext, expect } from '@playwright/test'
-
-// This config and interface are here for better visibility,
-// when the projects is bigger then this will be stored elsewhere (for example api-example-test.spec.ts).
-
-export const defaultConfig = {
-
-    orangeUrl: 'http://localhost:8080/web/index.php',
-    orangePath: '/api/v2/pim/employees',
-    orangeHeders: { 'Content-Type': 'application/json' },
-    postBody: {
-        "firstName": "AVB",
-        "middleName": "", 
-        "lastName": "vsa", 
-        "empPicture": null, 
-        "employeeId": "0267"
-    }
-
-}
-
-export interface APIConfig {
-
-    apiUrl: string
-    apiPath: string
-    apiHeders: Record <string, string>
-    apiBody?:object
-    request: APIRequestContext
-    
-}
+import { APIRequestContext } from '@playwright/test'
+import { expect } from '../../../tests/fixtures/webApp.fixture'
+import { defaultConfig } from '../../../api-test.config'
 
 export class EmployeeApi {
 
     url: string = ''
     path: string = ''
+    putPath: string = ''
     headers: Record<string, string> = {}
-    body?: object = {}
+    body: object = {}
+    deleteBody: object = {}
+    putBody: object = {}
     request: APIRequestContext
-    
+    fullUrl: string
+    putUrl: string = ''
+    empNumber: number
 
-    constructor (Apiconfig: APIConfig){
+    constructor ( request: APIRequestContext){
 
-        this.url = Apiconfig.apiUrl
-        this.path = Apiconfig.apiPath
-        this.headers = Apiconfig.apiHeders
-        this.body = Apiconfig.apiBody
-        this.request = Apiconfig.request
+        this.url = defaultConfig.orangeUrl
+        this.path = defaultConfig.orangePath
+        this.putPath = defaultConfig.orangePutPath
+        this.headers = defaultConfig.orangeHeders
+        this.body = defaultConfig.postBody
+        this.putBody = defaultConfig.putBody
+        this.request = request
+        this.fullUrl = new URL(`${this.url}${this.path}`).toString()
+        this.putUrl = new URL(`${this.url}${this.putPath}`).toString()
+        this.empNumber = defaultConfig.empNumber
         
-    }
-
-    private getURL(){
-
-        const url = new URL(`${this.url}${this.path}`)
-
-        return url.toString()
     }
 
     async getEmployees(){
 
-        const fullURL = this.getURL()
-
-        const response = await this.request.get(fullURL)
+        const response = await this.request.get(this.fullUrl)
 
         const responseJson = await response.json()
+
+        console.log(responseJson)
 
         return responseJson
 
     }
 
-    async postEmployee(status: number){
+    postEmployee = async(status:number) => {
 
-        const fullURL = this.getURL()
-
-        const response = await this.request.post(fullURL,{
+        const response = await this.request.post(this.fullUrl,{
             headers: this.headers,
             data: this.body
+        })
+
+        const responseJson = await response.json()
+
+        console.log(responseJson)
+
+        this.empNumber = await responseJson.data?.empNumber
+
+        console.log(`This is y: ${this.empNumber}`)
+
+        expect(status).toEqual(200)
+
+        return [responseJson, this.empNumber] 
+
+    }
+
+    async deleteEmployee(status: number, empNumber: number){
+
+        const response = await this.request.delete(this.fullUrl,{
+            headers: this.headers,
+            data: {"ids": [this.empNumber]}
         })
 
         const responseJson = await response.json()
@@ -80,6 +76,21 @@ export class EmployeeApi {
         expect(status).toEqual(200)
 
         return responseJson 
+
+    }
+
+    async putEmployee(status: number){
+
+        const response = await this.request.put(this.putUrl,{
+            headers: this.headers,
+            data: this.putBody
+        })
+
+        const responseJson = await response.json()
+
+        expect(status).toEqual(200)
+
+        return responseJson
 
     }
 

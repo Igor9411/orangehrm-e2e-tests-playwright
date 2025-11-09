@@ -1,11 +1,7 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
 import { employee } from './testsData.ts'
 import { EmployeeApi } from '../page-objects/orangeHRM/helpers/employeeAPI.ts'
-import { Page, request} from '@playwright/test'
-import { APIConfig } from '../page-objects/orangeHRM/helpers/employeeAPI.ts'
-import { defaultConfig } from '../page-objects/orangeHRM/helpers/employeeAPI.ts'
-
-
+import { defaultConfig } from '../api-test.config.ts'
 
 test('Check API with UI', async ({api, uiHelpers}) =>{
 
@@ -71,40 +67,39 @@ test('Create, update and Delete Employee', async ({ api }) =>{
 ////////////////////////////////////////////////////////////////
 
 
-test('Check get', async ({ request}) =>{
+test('Check get', async ({ request}) => {
 
-    const quickConfig: APIConfig = {
-        apiUrl: defaultConfig.orangeUrl,
-        apiPath: defaultConfig.orangePath,
-        apiHeders: defaultConfig.orangeHeders,
-        request
-    }
-
-    const api = new EmployeeApi(quickConfig)
+    const api = new EmployeeApi(request)
 
     const getRequest = await api.getEmployees()
 
     console.log(getRequest)
 
-})
-
-test('Check post', async ({ request }) =>{
-
-    const quickConfig: APIConfig = {
-        apiUrl: defaultConfig.orangeUrl,
-        apiPath: defaultConfig.orangePath,
-        apiHeders: defaultConfig.orangeHeders,
-        apiBody: defaultConfig.postBody,
-        request
-    }
-
-    const api = new EmployeeApi(quickConfig)
-
-    const postRequest = await api.postEmployee(200)
-
-    console.log(postRequest)
+    console.log(defaultConfig.orangePutPath)
 
 })
+
+test('Fixture post and delete', async ({ employeeApi, page, navigationPanel }) =>{
+
+    await page.goto('')
+
+    await navigationPanel.getAnyNavPanelItem('PIM').click()
+
+})
+
+test('A proper test using api', async ({employeeApi, startPage, navigationPanel}) => {
+
+    await expect(startPage.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
+
+    await navigationPanel.getAnyNavPanelItem('PIM').click()
+
+    await startPage.getByText(`${employee.Id}`).click()
+
+    await expect(startPage.getByRole('heading').filter({ hasText: `${employee.firstName} ${employee.lastName}`})).toBeVisible() 
+
+})
+
+
 
 
 

@@ -1,6 +1,10 @@
 import { test, expect } from './fixtures/webApp.fixture.ts'
 import { employee, customerName, projectName, activity} from './testsData.ts'
 
+const timesheetDays = 7
+
+const skipFirstTwoLocators = 2
+
 test('Timesheet and project workflow', async ({ workflow, startPage, navigationPanel, uiHelpers}) =>{
 
     test.setTimeout(40000)
@@ -41,7 +45,7 @@ test('Timesheet and project workflow', async ({ workflow, startPage, navigationP
 
     await uiHelpers.gettingAnyDropdownItem(activity).click()
 
-    for (let i = 2; i < 7; i++){
+    for (let i = skipFirstTwoLocators; i < timesheetDays; i++){
 
         await uiHelpers.gettingInputByIndex(i).fill('08:00')
 
