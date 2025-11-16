@@ -3,10 +3,10 @@ import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
 import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
 import { employee, leaveName} from '../testsData'
-import { RequestHandler } from '../../page-objects/orangeHRM/helpers/request-handler'
 export { expect } from '@playwright/test'
-import { EmployeeApi } from '../../page-objects/orangeHRM/helpers/employeeAPI'
-import { defaultConfig } from '../../api-test.config'
+import { EmployeeApi } from '../../page-objects/orangeHRM/api/employeeAPI'
+import { LeaveApi } from '../../page-objects/orangeHRM/api/leaveAPI'
+import { APILogger } from '../../utils/logger'
 
 const USERNAME = process.env.ORANGE_USERNAME ?? ''
 const PASSWORD = process.env.ORANGE_PASSWORD ?? ''
@@ -19,9 +19,9 @@ type myFixtures = {
     uiHelpers: UiHelpers
     navigationPanel: NavigationPanel
     workflow: Workflow
-    artemApi: RequestHandler
     api: EmployeeApi
     employeeApi: EmployeeApi
+    leaveAPI: LeaveApi
 }
 
 
@@ -83,19 +83,11 @@ export const test = base.extend<myFixtures>({
         
     },
     
-    artemApi: async({page}, use) => {
-
-        const orangeHrmURL = 'http://localhost:8080/web/index.php'
-
-        const reuqestHandler = new RequestHandler(page.request, orangeHrmURL)
-
-        await use(reuqestHandler)
-
-    },
-    
     api: async ({request}, use) => {
 
-        await use(new EmployeeApi(request))
+        const logger = new APILogger()
+
+        await use(new EmployeeApi(request, logger))
 
     },
 
@@ -103,13 +95,25 @@ export const test = base.extend<myFixtures>({
 
         await api.postEmployee(200)
 
-        await api.getEmployees()
+        await api.putEmployee(200)
+
+        await api.getEmployees(200)
 
         await use(api)
 
-        await api.deleteEmployee(200, employee.Id)
+        await api.deleteEmployee(200)
 
-        await api.getEmployees()
+        await api.getEmployees(200)
+
+    },
+
+    leaveAPI: async ({request}, use) => {
+
+        const logger = new APILogger()
+
+        const leave = new LeaveApi(request, logger)
+
+        await use (leave)
 
     }
 })

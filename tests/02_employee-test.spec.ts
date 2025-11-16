@@ -14,9 +14,13 @@ test('Create new employee', async ({ startPage, workflow, uiHelpers }) => {
     await workflow.deleteEmployee(employee.firstName)
 })
 
-test('Adding employee personal data', async ({ workflow, uiHelpers, startPage }) => {
+test('Adding employee personal data', async ({ navigationPanel, uiHelpers, startPage, api }) => {
 
-    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+    await api.postEmployee(200)
+
+    await navigationPanel.getAnyNavPanelItem('PIM').click()
+
+    await uiHelpers.row.filter({hasText: employee.firstName}).click()
 
     await uiHelpers.gettingInputByIndex(2).fill(employee.middleName)
 
@@ -54,14 +58,14 @@ test('Adding employee personal data', async ({ workflow, uiHelpers, startPage })
 
     await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-    await workflow.deleteEmployee(employee.firstName)
+    await api.deleteEmployee(200)
 
 })
 
 
-test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPage}) =>{
+test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPage, api}) =>{
 
-    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+    await api.postEmployee(200)
 
     await navigationPanel.getAnyNavPanelItem('PIM').click()
 
@@ -77,13 +81,13 @@ test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPa
 
     await expect(uiHelpers.row.filter({hasText: employee.firstName})).not.toBeVisible()
 
-    await workflow.deleteEmployee(employee.newFirstName)
+    await api.deleteEmployee(200)
 })
 
-test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHelpers }) => {
+test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHelpers, api }) => {
 
-    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
-
+    await api.postEmployee(200)
+    
     await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
 
     await expect(startPage.getByText('Employee Id already exists')).toBeVisible()
@@ -92,13 +96,13 @@ test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHel
 
     await expect(startPage).toHaveURL(/addEmployee/)
 
-    await workflow.deleteEmployee(employee.firstName)
+    await api.deleteEmployee(200)
 
 })
 
-test('Delete employee', async ({ startPage, workflow, uiHelpers }) =>{
+test('Delete employee', async ({ startPage, workflow, uiHelpers, api }) =>{
 
-    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+    await api.postEmployee(200)
 
     await workflow.deleteEmployee(employee.firstName)
 

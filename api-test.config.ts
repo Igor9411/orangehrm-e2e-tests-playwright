@@ -1,21 +1,19 @@
-import { employee } from "./tests/testsData"
+import { employee, leaveName } from "./tests/testsData"
 
-const putIdPath = ''
 export const defaultConfig = {
 
-    orangeUrl: 'http://localhost:8080/web/index.php',
-    orangePath: '/api/v2/pim/employees',
-    orangePutPath: `/api/v2/pim/employees/${putIdPath}/personal-details`,
+    orangeUrl: 'http://localhost:8080/web/index.php/api/v2',
+    employeePath: '/pim/employees',
+    leavePath: '/leave/leave-types',
     orangeHeders: { 'Content-Type': 'application/json' },
-    empNumber: 0,
-    postBody: {
+    postEmployeeBody: {
         "firstName": employee.firstName,
         "middleName": employee.middleName, 
         "lastName": employee.lastName, 
         "empPicture": null, 
         "employeeId": String(employee.Id)
     },
-    putBody: {
+    putEmplyeeBody: {
         "lastName":employee.newLastName,
         "firstName":employee.newFirstName,
         "middleName":"",
@@ -28,7 +26,11 @@ export const defaultConfig = {
         "nickname":employee.nickname,
         "smoker":false,
         "militaryService":employee.military
-    }
+    },
+    leaveBody: {
+        "name":leaveName,
+        "situational":false
+    },
     
-
+    
 }
