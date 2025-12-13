@@ -1,4 +1,4 @@
-import { test as setup, expect } from '../tests/fixtures/webApp.fixture.ts'
+import { test as setup, expect } from '../tests/fixtures/webApp.fixture'
 
 setup('Write login session data', async({ webApp }) => {
         

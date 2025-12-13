@@ -1,5 +1,6 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
-import { employee, leaveName} from '../tests/testsData.ts'
+import { employee, leaveName, fullEmployeeName} from '../utils/testsData.ts'
+
 
 test('New type of leave can be created', async ({ startPage, uiHelpers, workflow}) => {
 
@@ -21,7 +22,7 @@ test('Delete leave', async ({ startPage, uiHelpers, workflow}) => {
 
     await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
 
-    await startPage.getByRole('row', { name: ' Name Actions' }).waitFor({state: 'visible' })
+    await startPage.getByRole('row', { name: ' Name Actions' }).waitFor({state: 'visible'})
 
     await expect(uiHelpers.row.filter({hasText: leaveName})).not.toBeVisible()
 
@@ -35,11 +36,11 @@ test('Add entitlement to employee', async ({ leavePage, uiHelpers, navigationPan
 
     await leavePage.getByText('Individual Employee').click()
 
-    await uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
+    await uiHelpers.gettingInputByIndex(1).fill(fullEmployeeName)
 
-    await expect(uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`})).toBeVisible()
+    await expect(uiHelpers.dropdownOptionItem.filter({hasText: fullEmployeeName})).toBeVisible()
 
-    await uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`}).click()
+    await uiHelpers.dropdownOptionItem.filter({hasText: fullEmployeeName}).click()
 
     await uiHelpers.selectInput.click()
 
@@ -67,9 +68,9 @@ test('Add days of leave to employee', async ({ uiHelpers, workflow, leavePage })
 
     await expect(leavePage.getByText('Day(s)')).toHaveText('0.00 Day(s)')
 
-    await uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
+    await uiHelpers.gettingInputByIndex(1).fill(fullEmployeeName)
 
-    await uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`}).click()
+    await uiHelpers.dropdownOptionItem.filter({hasText: fullEmployeeName}).click()
 
     await uiHelpers.selectInput.click()
 

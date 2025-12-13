@@ -8,6 +8,7 @@ export const projectName = faker.word.adjective().toUpperCase()
 export const customerName = `${faker.person.lastName()} LTD`
 export const activity = faker.company.buzzVerb()
 
+
 export const employee = {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
@@ -23,5 +24,7 @@ export const employee = {
         newId: faker.number.int( {max: 10000} ),
         entitlementDays: '10',
         minSalary: faker.number.int( {min: 1000, max: 3000}),
-        maxSalary: faker.number.int( {min:3000, max: 5500})
+        maxSalary: faker.number.int( {min:3000, max: 5500}),
     }
+
+export const fullEmployeeName = `${employee.firstName} ${employee.middleName} ${employee.lastName}`

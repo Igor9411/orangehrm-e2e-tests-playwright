@@ -1,5 +1,5 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
-import { employee, latin } from './testsData.ts'
+import { employee, latin } from '../utils/testsData.ts'
 
 const formattedDate = employee.birthDate.toISOString().slice(0,10)
 
@@ -14,9 +14,9 @@ test('Create new employee', async ({ startPage, workflow, uiHelpers }) => {
     await workflow.deleteEmployee(employee.firstName)
 })
 
-test('Adding employee personal data', async ({ navigationPanel, uiHelpers, startPage, api }) => {
+test('Adding employee personal data', async ({ navigationPanel, uiHelpers, startPage, employeeApi }) => {
 
-    await api.postEmployee(200)
+    await employeeApi.postEmployee(200)
 
     await navigationPanel.getAnyNavPanelItem('PIM').click()
 
@@ -58,14 +58,14 @@ test('Adding employee personal data', async ({ navigationPanel, uiHelpers, start
 
     await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-    await api.deleteEmployee(200)
+    await employeeApi.deleteEmployee(200)
 
 })
 
 
-test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPage, api}) =>{
+test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPage, employeeApi}) =>{
 
-    await api.postEmployee(200)
+    await employeeApi.postEmployee(200)
 
     await navigationPanel.getAnyNavPanelItem('PIM').click()
 
@@ -81,12 +81,12 @@ test('Edit employee data', async({ workflow, navigationPanel, uiHelpers, startPa
 
     await expect(uiHelpers.row.filter({hasText: employee.firstName})).not.toBeVisible()
 
-    await api.deleteEmployee(200)
+    await employeeApi.deleteEmployee(200)
 })
 
-test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHelpers, api }) => {
+test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHelpers, employeeApi }) => {
 
-    await api.postEmployee(200)
+    await employeeApi.postEmployee(200)
     
     await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
 
@@ -96,13 +96,13 @@ test('Duplicate employee cannot be created', async ({ startPage, workflow, uiHel
 
     await expect(startPage).toHaveURL(/addEmployee/)
 
-    await api.deleteEmployee(200)
+    await employeeApi.deleteEmployee(200)
 
 })
 
-test('Delete employee', async ({ startPage, workflow, uiHelpers, api }) =>{
+test('Delete employee', async ({ startPage, workflow, uiHelpers, employeeApi }) =>{
 
-    await api.postEmployee(200)
+    await employeeApi.postEmployee(200)
 
     await workflow.deleteEmployee(employee.firstName)
 

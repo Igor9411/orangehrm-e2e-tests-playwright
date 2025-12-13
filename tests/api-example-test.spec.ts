@@ -1,13 +1,13 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
-import { employee } from './testsData.ts'
+import { employee } from '../utils/testsData.ts'
 
-test('Check get', async ({ request, employeeApi}) => {
+test('Check get', async ({ request, employeeApiTest}) => {
 
 console.log('dupa')
 
 })
 
-test('Fixture post and put', async ({ employeeApi, page, navigationPanel }) =>{
+test('Fixture post and put', async ({ employeeApiTest, page, navigationPanel }) =>{
 
     await page.goto('')
 
@@ -15,7 +15,7 @@ test('Fixture post and put', async ({ employeeApi, page, navigationPanel }) =>{
 
 })
 
-test('A proper test using api', async ({employeeApi, startPage, navigationPanel}) => {
+test('A proper test using api', async ({employeeApiTest, startPage, navigationPanel}) => {
 
     await expect(startPage.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
 
@@ -27,14 +27,14 @@ test('A proper test using api', async ({employeeApi, startPage, navigationPanel}
 
 })
 
-test('Leave api', async ({ leaveAPI }) => {
+test('Leave api', async ({ jobAPI }) => {
 
-    
+    await jobAPI.getPayGrades(200)
 
-    await leaveAPI.postLeave(200)
+    await jobAPI.postPayGrade(200)
 
-    await leaveAPI.deleteLeave(200)
+    await jobAPI.deletePayGrade(200)
 
-    await leaveAPI.getLeaves(200)
+    await jobAPI.getPayGrades(200)
 
 })

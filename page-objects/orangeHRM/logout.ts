@@ -8,7 +8,8 @@ export class LogOutPage {
     private logoutItem : Locator
 
     constructor (page:Page){
-
+        
+        this.page = page
         this.banner = page.getByRole('banner').getByRole('img', { name: 'profile picture' })
         this.logoutItem = page.getByRole('menuitem', { name: 'Logout' })
     }

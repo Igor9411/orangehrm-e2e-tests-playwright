@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test' 
 import { UiHelpers } from './uiHelpers'
 import { NavigationPanel } from '../naviPanel'
-import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity} from '../../../tests/testsData'
+import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity, fullEmployeeName} from '../../../utils/testsData'
 
 export class Workflow {
 
@@ -97,9 +97,9 @@ export class Workflow {
         
         await this.page.getByText('Individual Employee').click()
         
-        await this.uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
+        await this.uiHelpers.gettingInputByIndex(1).fill(fullEmployeeName)
         
-        await this.uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`}).click()
+        await this.uiHelpers.dropdownOptionItem.filter({hasText: fullEmployeeName}).click()
 
         await this.uiHelpers.selectInput.click()
 
@@ -169,7 +169,7 @@ export class Workflow {
 
         await this.uiHelpers.gettingInputByIndex(4).fill(`${employee.firstName} ${employee.lastName}`)
 
-        await this.uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.lastName}`).click()
+        await this.uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.middleName} ${employee.lastName}`).click()
 
         await this.uiHelpers.saveButton.last().click()
 

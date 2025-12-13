@@ -2,11 +2,11 @@ import { test as base, Page } from '@playwright/test'
 import { UiHelpers } from '../../page-objects/orangeHRM/helpers/uiHelpers'
 import { NavigationPanel } from '../../page-objects/orangeHRM/naviPanel'
 import { Workflow } from '../../page-objects/orangeHRM/helpers/workflows'
-import { employee, leaveName} from '../testsData'
 export { expect } from '@playwright/test'
 import { EmployeeApi } from '../../page-objects/orangeHRM/api/employeeAPI'
 import { LeaveApi } from '../../page-objects/orangeHRM/api/leaveAPI'
 import { APILogger } from '../../utils/logger'
+import { JobApi } from '../../page-objects/orangeHRM/api/jobAPI'
 
 const USERNAME = process.env.ORANGE_USERNAME ?? ''
 const PASSWORD = process.env.ORANGE_PASSWORD ?? ''
@@ -19,9 +19,10 @@ type myFixtures = {
     uiHelpers: UiHelpers
     navigationPanel: NavigationPanel
     workflow: Workflow
-    api: EmployeeApi
     employeeApi: EmployeeApi
+    employeeApiTest: EmployeeApi
     leaveAPI: LeaveApi
+    jobAPI: JobApi
 }
 
 
@@ -67,23 +68,23 @@ export const test = base.extend<myFixtures>({
 
     },
 
-    leavePage: async ({page, workflow}, use: (fixture: Page) => Promise<void>) => {
+    leavePage: async ({page, leaveAPI, employeeApi}, use: (fixture: Page) => Promise<void>) => {
+
+        await leaveAPI.postLeave(200)
+
+        await employeeApi.postEmployee(200)
 
         await page.goto('')
-
-        await workflow.createLeave(leaveName)
-
-        await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
     
         await use(page)
 
-        await workflow.deleteLeave(leaveName)
+        await leaveAPI.deleteLeave(200)
 
-        await workflow.deleteEmployee(employee.firstName)
+        await employeeApi.deleteEmployee(200)
         
     },
     
-    api: async ({request}, use) => {
+    employeeApi: async ({request}, use) => {
 
         const logger = new APILogger()
 
@@ -91,19 +92,19 @@ export const test = base.extend<myFixtures>({
 
     },
 
-    employeeApi: async ({api}, use) => {
+    employeeApiTest: async ({employeeApi}, use) => {
 
-        await api.postEmployee(200)
+        await employeeApi.postEmployee(200)
 
-        await api.putEmployee(200)
+        await employeeApi.putEmployee(200)
 
-        await api.getEmployees(200)
+        await employeeApi.getEmployees(200)
 
-        await use(api)
+        await use(employeeApi)
 
-        await api.deleteEmployee(200)
+        await employeeApi.deleteEmployee(200)
 
-        await api.getEmployees(200)
+        await employeeApi.getEmployees(200)
 
     },
 
@@ -114,6 +115,16 @@ export const test = base.extend<myFixtures>({
         const leave = new LeaveApi(request, logger)
 
         await use (leave)
+
+    },
+
+    jobAPI: async ({request}, use) => {
+
+        const logger = new APILogger()
+
+        const job = new JobApi(request, logger)
+
+        await use (job)
 
     }
 })

@@ -1,5 +1,4 @@
 import { APIRequestContext } from '@playwright/test'
-import { expect } from '../../../tests/fixtures/webApp.fixture'
 import { defaultConfig } from '../../../api-test.config'
 import { APILogger } from '../../../utils/logger'
 

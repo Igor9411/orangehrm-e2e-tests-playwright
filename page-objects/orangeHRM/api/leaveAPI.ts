@@ -82,7 +82,6 @@ export class LeaveApi {
     
         }
 
-    // THIS CLASS HAS TO BE EXPORTED FROM EMPLOYEEAPI BUT CAN BE DONE LATER
     private statusCodeValidator(actualStatus: number, expectedStatus: number, callingMethod: Function){
 
         if(actualStatus !== expectedStatus){

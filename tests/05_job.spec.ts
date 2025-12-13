@@ -1,7 +1,7 @@
 import { test, expect } from '../tests/fixtures/webApp.fixture.ts'
-import { jobTitle, payGrade, employee } from './testsData.ts'
+import { jobTitle, payGrade, employee } from '../utils/testsData.ts'
 
-test('Job Workflow', async ({ startPage, workflow, uiHelpers, navigationPanel }) => { 
+test('Job Workflow UI', async ({ startPage, workflow, uiHelpers, navigationPanel }) => { 
 
     await navigationPanel.getAnyNavPanelItem('Admin').click()
 
@@ -23,13 +23,29 @@ test('Job Workflow', async ({ startPage, workflow, uiHelpers, navigationPanel })
 
 })
 
-test('Job Validation', async ({ startPage, workflow, uiHelpers, navigationPanel }) => { 
+test('Job Workflow API', async ({ startPage, uiHelpers, jobAPI }) => { 
+
+    await jobAPI.postJob(200)
+
+    await startPage.goto('http://localhost:8080/web/index.php/admin/viewJobTitleList')
+
+    await expect(uiHelpers.row.filter({hasText: jobTitle})).toBeVisible()
+
+    await jobAPI.deleteJob(200)
+
+    await startPage.reload()
+
+    await expect(uiHelpers.row.filter({hasText: jobTitle})).not.toBeVisible()
+
+})
+
+test('Job Validation', async ({ startPage, workflow, uiHelpers, navigationPanel, jobAPI }) => { 
+
+    await jobAPI.postJob(200)
 
     await navigationPanel.getAnyNavPanelItem('Admin').click()
 
     await uiHelpers.gettingTopBarMenuItem('Job', 'Job Titles')
-
-    await workflow.createJob()
 
     await workflow.createJob()
 
@@ -39,11 +55,11 @@ test('Job Validation', async ({ startPage, workflow, uiHelpers, navigationPanel 
 
     await uiHelpers.cancelButton.click()
 
-    await workflow.deleteRow(jobTitle)
+    await jobAPI.deleteJob(200)
 
 })
 
-test('Add new pay grade', async ({ startPage, uiHelpers, workflow, navigationPanel }) => {
+test('Pay Grade Workflow', async ({ startPage, uiHelpers, workflow, navigationPanel }) => {
 
     await navigationPanel.getAnyNavPanelItem('Admin').click()
 
@@ -51,13 +67,33 @@ test('Add new pay grade', async ({ startPage, uiHelpers, workflow, navigationPan
 
     await workflow.createPayGrade()
 
+    await startPage.goto('http://localhost:8080/web/index.php/admin/viewPayGrades')
+
+    await expect(uiHelpers.row.filter({hasText: payGrade})).toBeVisible()
+
+    await workflow.deleteRow(payGrade)
+
+    await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
+
+    await startPage.getByRole('row', { name: ' Name Currency Actions' }).waitFor({ state: 'visible' })
+
+    await expect(uiHelpers.row.filter({hasText: payGrade})).not.toBeVisible()
+
+})
+
+test('Add Currency for Pay Grade', async ({ uiHelpers, page, jobAPI}) => {
+
+    await jobAPI.postPayGrade(200)
+
+    await page.goto(`http://localhost:8080/web/index.php/admin/payGrade/${jobAPI.payGradeId}`)
+
     await uiHelpers.addButton.click()
 
-    await expect(startPage.getByText('Add CurrencyCurrency-- Select')).toBeVisible()
+    await expect(page.getByText('Add CurrencyCurrency-- Select')).toBeVisible()
 
     await uiHelpers.selectInput.click()
 
-    await startPage.getByRole('option', { name: 'PLN - Polish Zloty' }).click()
+    await page.getByRole('option', { name: 'PLN - Polish Zloty' }).click()
 
     await uiHelpers.gettingInputByIndex(2).fill(String(employee.minSalary))
 
@@ -67,15 +103,13 @@ test('Add new pay grade', async ({ startPage, uiHelpers, workflow, navigationPan
 
     await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-    await expect(startPage.getByRole('cell', { name: 'Polish Zloty' })).toBeVisible()
+    await expect(page.getByRole('cell', { name: 'Polish Zloty' })).toBeVisible()
     
     await uiHelpers.cancelButton.click()
 
-    await workflow.deleteRow(payGrade)
+    await jobAPI.deletePayGrade(200)
 
-    await expect(uiHelpers.deleteConfirmationToastMessage).toBeVisible()
-
-    await startPage.getByRole('row', { name: ' Name Currency Actions' }).waitFor({ state: 'visible' })
+    await page.reload()
 
     await expect(uiHelpers.row.filter({hasText: payGrade})).not.toBeVisible()
 
