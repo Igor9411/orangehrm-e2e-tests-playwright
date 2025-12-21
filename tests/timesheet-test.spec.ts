@@ -1,11 +1,13 @@
-import { test, expect } from './fixtures/webApp.fixture.ts'
-import { employee, customerName, projectName, activity} from './testsData.ts'
+import { test, expect } from '../utils/webApp.fixture.ts'
+import { employee, customerName, projectName, activity} from '../testData/testsData.ts'
 
-test('Timesheet and project workflow', async ({ workflow, startPage, navigationPanel, uiHelpers}) =>{
+const timesheetDays = 7
 
-    test.setTimeout(40000)
+const firstTwoPageElements = 2
 
-    await workflow.createEmployee(employee.firstName, employee.lastName, employee.Id)
+test('Timesheet and project workflow', async ({ workflow, startPage, navigationPanel, uiHelpers, employeeApi}) =>{
+
+    await employeeApi.postEmployee(200)
 
     await navigationPanel.getAnyNavPanelItem('Time').click()
 
@@ -25,7 +27,7 @@ test('Timesheet and project workflow', async ({ workflow, startPage, navigationP
 
     await uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
 
-    await uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.lastName}`).click()
+    await uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.middleName} ${employee.lastName}`).click()
 
     await startPage.getByRole('button', { name: 'View' }).first().click()
 
@@ -41,7 +43,7 @@ test('Timesheet and project workflow', async ({ workflow, startPage, navigationP
 
     await uiHelpers.gettingAnyDropdownItem(activity).click()
 
-    for (let i = 2; i < 7; i++){
+    for (let i = firstTwoPageElements; i < timesheetDays; i++){
 
         await uiHelpers.gettingInputByIndex(i).fill('08:00')
 
@@ -51,7 +53,7 @@ test('Timesheet and project workflow', async ({ workflow, startPage, navigationP
 
     await expect(uiHelpers.successfullySavedToastMessage).toBeVisible()
 
-    // await workflow.deleteEmployee(employee.firstName)
+    await employeeApi.deleteEmployee(200)
 
     await navigationPanel.getAnyNavPanelItem('Time').click()
 

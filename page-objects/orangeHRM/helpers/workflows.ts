@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test' 
 import { UiHelpers } from './uiHelpers'
-import { NavigationPanel } from '../naviPanel'
-import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity} from '../../../tests/testsData'
+import { NavigationPanel } from './naviPanel'
+import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity, fullEmployeeName} from '../../../testData/testsData'
 
 export class Workflow {
 
@@ -23,7 +23,7 @@ export class Workflow {
 
     // Employee methods
 
-    async createEmployee (name: string, lastName: string, id:number){
+    async createEmployee (name: string, lastName: string, id: number){
 
         await this.navigationPanel.getAnyNavPanelItem('PIM').click()
 
@@ -39,7 +39,7 @@ export class Workflow {
 
     }
 
-    async editEmployee(name: string, lastName: string, id:number){
+    async editEmployee(name: string, lastName: string, id: number){
 
         await this.uiHelpers.gettingInputByIndex(1).fill(name)
 
@@ -51,7 +51,7 @@ export class Workflow {
 
     }
 
-    async deleteEmployee (name:string){
+    async deleteEmployee (name: string){
 
         await this.navigationPanel.getAnyNavPanelItem('PIM').click()
 
@@ -63,7 +63,7 @@ export class Workflow {
 
     // Leave Methods
 
-    async createLeave (text:string){
+    async createLeave (text: string){
 
         await this.navigationPanel.getAnyNavPanelItem('Leave').click()
 
@@ -79,7 +79,7 @@ export class Workflow {
 
     }
 
-    async deleteLeave (text:string){
+    async deleteLeave (text: string){
 
         await this.page.goto('http://localhost:8080/web/index.php/leave/leaveTypeList')
 
@@ -97,9 +97,9 @@ export class Workflow {
         
         await this.page.getByText('Individual Employee').click()
         
-        await this.uiHelpers.gettingInputByIndex(1).fill(`${employee.firstName} ${employee.lastName}`)
+        await this.uiHelpers.gettingInputByIndex(1).fill(fullEmployeeName)
         
-        await this.uiHelpers.dropdownOptionItem.filter({hasText: `${employee.firstName} ${employee.lastName}`}).click()
+        await this.uiHelpers.dropdownOptionItem.filter({hasText: fullEmployeeName}).click()
 
         await this.uiHelpers.selectInput.click()
 
@@ -141,7 +141,7 @@ export class Workflow {
     }
 
     // This is for deleting job, pay grade and project function.
-    async deleteRow(text:string){
+    async deleteRow(text: string){
 
         await this.uiHelpers.row.filter({hasText: text}).getByRole('button').first().click()
 
@@ -169,7 +169,7 @@ export class Workflow {
 
         await this.uiHelpers.gettingInputByIndex(4).fill(`${employee.firstName} ${employee.lastName}`)
 
-        await this.uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.lastName}`).click()
+        await this.uiHelpers.gettingAnyDropdownItem(`${employee.firstName} ${employee.middleName} ${employee.lastName}`).click()
 
         await this.uiHelpers.saveButton.last().click()
 
