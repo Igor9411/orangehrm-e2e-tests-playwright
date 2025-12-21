@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test' 
 import { UiHelpers } from './uiHelpers'
-import { NavigationPanel } from '../naviPanel'
-import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity, fullEmployeeName} from '../../../utils/testsData'
+import { NavigationPanel } from './naviPanel'
+import { employee, leaveName, jobTitle, payGrade, projectName, customerName, activity, fullEmployeeName} from '../../../testData/testsData'
 
 export class Workflow {
 

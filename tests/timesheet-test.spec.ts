@@ -1,12 +1,11 @@
-import { test, expect } from './fixtures/webApp.fixture.ts'
-import { employee, customerName, projectName, activity} from '../utils/testsData.ts'
+import { test, expect } from '../utils/webApp.fixture.ts'
+import { employee, customerName, projectName, activity} from '../testData/testsData.ts'
 
 const timesheetDays = 7
 
 const firstTwoPageElements = 2
 
-
-test('Timesheet and project workflow API', async ({ workflow, startPage, navigationPanel, uiHelpers, employeeApi}) =>{
+test('Timesheet and project workflow', async ({ workflow, startPage, navigationPanel, uiHelpers, employeeApi}) =>{
 
     await employeeApi.postEmployee(200)
 

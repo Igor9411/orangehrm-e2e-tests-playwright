@@ -1,5 +1,5 @@
 import { APIRequestContext } from '@playwright/test'
-import { defaultConfig } from '../../../api-test.config'
+import { defaultConfig } from '../../../testData/api-test.config'
 import { APILogger } from '../../../utils/logger'
 
 export class EmployeeApi {

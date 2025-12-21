@@ -1,4 +1,4 @@
-import { employee, leaveName, jobTitle, payGrade } from "./utils/testsData"
+import { employee, leaveName, jobTitle, payGrade } from "./testsData"
 
 export const defaultConfig = {
 

@@ -1,6 +1,6 @@
-import { test, expect } from '../tests/fixtures/webApp.fixture.ts';
+import { test as logout , expect } from '../utils/webApp.fixture';
 
-test('Successfull logout from orangeHRM', async ({ startPage, uiHelpers }) => { 
+logout('Successfull logout from orangeHRM', async ({ startPage, uiHelpers }) => { 
 
     await startPage.getByRole('banner').getByRole('img', { name: 'profile picture' }).click()
 
