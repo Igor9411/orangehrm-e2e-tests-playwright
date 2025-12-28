@@ -28,3 +28,15 @@ export const employee = {
     }
 
 export const fullEmployeeName = `${employee.firstName} ${employee.middleName} ${employee.lastName}`
+
+export const candidate = {
+    firstName: faker.person.firstName(),
+    middleName: faker.person.middleName(),
+    lastName: faker.person.lastName(),
+    email: faker.internet.email(),
+    contactNumber: faker.phone.number(),
+    keywords: faker.lorem.words(3),
+    comment: faker.lorem.sentence(),
+    dateOfApplication: "2025-12-21",
+    consentToKeepData: false,
+}

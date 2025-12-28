@@ -1,4 +1,4 @@
-import { employee, leaveName, jobTitle, payGrade } from "./testsData"
+import { employee, leaveName, jobTitle, payGrade, candidate } from "./testsData"
 
 export const defaultConfig = {
 
@@ -7,6 +7,7 @@ export const defaultConfig = {
     leavePath: '/leave/leave-types',
     jobPath: '/admin/job-titles',
     payGradePath: '/admin/pay-grades',
+    candidatePath: '/recruitment/candidates',
     orangeHeders: { 'Content-Type': 'application/json' },
     postEmployeeBody: {
         "firstName": employee.firstName,
@@ -41,6 +42,17 @@ export const defaultConfig = {
     },
     payGradeBody: {
         "name":payGrade
+    },
+    candidateBody: {
+        "firstName": candidate.firstName,
+        "middleName": candidate.middleName,
+        "lastName": candidate.lastName,
+        "email": candidate.email,
+        "contactNumber": candidate.contactNumber,
+        "keywords": candidate.keywords,
+        "comment": candidate.comment,
+        "dateOfApplication": candidate.dateOfApplication,
+        "consentToKeepData": candidate.consentToKeepData
     }
     
 }
