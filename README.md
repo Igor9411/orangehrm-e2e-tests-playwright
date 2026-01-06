@@ -3,7 +3,12 @@ This is a project of e2e tests of the open source app OrangeHrm (https://github.
 
 ## CI/CD Pipeline
 A CI/CD pipeline is planned for this project to automate running the tests.  
-Currently, the pipeline is not set up yet, but this is something I am actively working on and will add in the near future.
+Currently, the pipeline is not set up yet, but this is something that is being actively working on and will be added in the near future. 
+
+## AI-assisted development
+AI tools were applied at a later stage to support code and test generation.
+The generated code followed patterns and structures previously defined by the developer and was based on existing test data.
+AI was used as a productivity tool to automate repetitive tasks, while all architectural and logical decisions were made manually.
 
 ## Installation guide (locally):
 1. Download and install Vs Code > https://code.visualstudio.com/docs/setup/windows
